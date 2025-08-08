@@ -1,0 +1,165 @@
+ /* ベーススタイル設定 */
+ body {
+    background-color:rgb(250, 250, 250);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+ /* ログインカードのスタイル */
+.content-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    padding: 40px;
+    animation: fadeInUp 0.6s ease-out;
+    transition: box-shadow 0.3s ease;
+}
+/* ログインカードのホバー効果 */
+.content-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* 統一された入力グループのスタイル */
+.input-group {
+    width: 100%;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: white;
+    color: #1f2937;
+}
+
+/* 入力グループのホバー効果 */
+.input-group:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-color: #ced4da;
+}
+
+/* 入力グループのフォーカス効果 */
+.input-group:focus-within {
+    outline: none;
+    border-color: #136AA8;
+    box-shadow: 0 0 0 4px rgba(19, 106, 168, 0.1);
+    background: #fefefe;
+}
+
+/* アイコン表示領域のスタイル */
+.input-group-text {
+    background: transparent;
+    border: none;
+    padding: 15px 18px;
+    color: #6c757d;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    min-width: 50px;
+}
+
+/* フォーカス時のアイコンスタイル */
+.input-group:focus-within .input-group-text {
+    color: #136AA8;
+    transform: scale(1.1);
+}
+
+ /* 入力フィールドの基本スタイル */
+ .form-control {
+     border: none;
+     background: transparent;
+     padding: 15px 18px 15px 0;
+     font-size: 1rem;
+     color: #495057;
+     outline: none;
+     box-shadow: none;
+     transition: all 0.3s ease;
+     flex: 1;
+ }
+ /* 入力フィールドのフォーカススタイル */
+ .form-control:focus {
+     border: none;
+     box-shadow: none;
+     background: transparent;
+     color: #212529;
+ }
+ /* プレースホルダーテキストのスタイル */
+ .form-control::placeholder {
+     color: #adb5bd;
+     opacity: 1;
+     transition: all 0.3s ease;
+ }
+
+
+ /* カスタムアラートメッセージのスタイル */
+ .alert-custom {
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 20px;
+    padding: 15px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* バリデーションエラーメッセージのスタイル */
+.validation-message {
+    color: #dc3545;
+    font-size: 0.8rem;
+    margin-top: 8px;
+    display: block;
+    padding-left: 5px;
+    font-weight: 500;
+}
+
+ /* レジスタボタンの基本スタイル */
+ .btn-register {
+    background: #136AA8;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 0;
+    margin-top: 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    align-items: center;
+    white-space: nowrap;
+    font-size: 14px;
+    width: 100%;
+}
+
+/* レジスタボタンのホバー効果 */
+.btn-register:hover {
+    background: #0f5a94;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(19, 106, 168, 0.3);
+}
+/* レジスタボタンのアクティブ状態 */
+.btn-register:active {
+    background: #0f5a94;
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(19, 106, 168, 0.3);
+}
+
+ /* リンク領域 */
+.link-area {
+    text-align: center;
+    margin-top: 25px;
+}
+/* リンクのスタイル */
+.link-area a {
+    color: #0d6efd;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+/* リンクのホバー効果 */
+.link-area a:hover {
+    background: rgba(13, 110, 253, 0.1);
+    color: #0b5ed7;
+    transform: translateY(-1px);
+}

@@ -1,0 +1,99 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = Proposal
+build_property.RootNamespace = Proposal
+build_property.ProjectDir = c:\Users\yuyea\Desktop\担当案件\令和7年度\提案書\code\HL\Proposal\Proposal\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = true
+build_property.MSBuildProjectDirectory = c:\Users\yuyea\Desktop\担当案件\令和7年度\提案書\code\HL\Proposal\Proposal
+build_property._RazorSourceGeneratorDebug = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/ChangePass/ChangePassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhbmdlUGFzc1xDaGFuZ2VQYXNzd29yZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/Chokannrisha/Chokannrisha.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hva2FubnJpc2hhXENob2thbm5yaXNoYS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/Create/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/Create/_BasicInfo.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlXF9CYXNpY0luZm8uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/Create/_ProposalContent.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JlYXRlXF9Qcm9wb3NhbENvbnRlbnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/ForgetPass/ForgetPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9yZ2V0UGFzc1xGb3JnZXRQYXNzd29yZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/Ichijishinnsanyuryoku/Ichijishinnsanyuryoku.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSWNoaWppc2hpbm5zYW55dXJ5b2t1XEljaGlqaXNoaW5uc2FueXVyeW9rdS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/Kakusyusettei/kakusyusettei.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS2FrdXN5dXNldHRlaVxrYWt1c3l1c2V0dGVpLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/Kensaku/Kensaku.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS2Vuc2FrdVxLZW5zYWt1LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/Login/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cTG9naW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/Menu/Menu.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVudVxNZW51LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/NichijishinnsaNyuryoku/NichijishinnsaNyuryoku.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmljaGlqaXNoaW5uc2FOeXVyeW9rdVxOaWNoaWppc2hpbm5zYU55dXJ5b2t1LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/ProposalList/ProposalList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvcG9zYWxMaXN0XFByb3Bvc2FsTGlzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/Sanjishinnsanyuryoku/Sanjishinnsanyuryoku.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2FuamlzaGlubnNhbnl1cnlva3VcU2FuamlzaGlubnNhbnl1cnlva3UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/yuyea/Desktop/担当案件/令和7年度/提案書/code/HL/Proposal/Proposal/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 

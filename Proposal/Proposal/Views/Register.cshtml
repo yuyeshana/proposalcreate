@@ -1,0 +1,43 @@
+@{
+    ViewData["Title"] = "新規ユーザー登録";
+}
+<div class="container" style="max-width:400px;margin-top:80px;">
+    <h2 class="text-center mb-4">新規ユーザー登録</h2>
+    <form method="post" action="/proposal/register">
+        <div class="mb-3">
+            <label for="user_id" class="form-label">ユーザーID</label>
+            <input type="text" class="form-control" id="user_id" name="user_id" required minlength="4" maxlength="20">
+        </div>
+        <div class="mb-3">
+            <label for="user_name" class="form-label">ユーザー名</label>
+            <input type="text" class="form-control" id="user_name" name="user_name" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">パスワード</label>
+            <input type="password" class="form-control" id="password" name="password" required minlength="8" maxlength="32">
+        </div>
+        <div class="mb-3">
+            <label for="user_kbn" class="form-label">ユーザー区分</label>
+            <select class="form-select" id="user_kbn" name="user_kbn" required>
+                <option value="">選択してください</option>
+                <option value="1">提案者</option>
+                <option value="2">一次審査者</option>
+                <option value="3">総務課長</option>
+                <option value="4">局総務課</option>
+                <option value="5">二次審査者</option>
+                <option value="6">庁総務課</option>
+                <option value="7">三次審査者</option>
+            </select>
+        </div>
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">登録</button>
+            <a href="/proposal/login" class="btn btn-secondary">ログインへ戻る</a>
+        </div>
+    </form>
+    @if(ViewBag.Error != null) {
+        <div class="alert alert-danger mt-3 text-center">@ViewBag.Error</div>
+    }
+    @if(ViewBag.Success != null) {
+        <div class="alert alert-success mt-3 text-center">@ViewBag.Success</div>
+    }
+</div> 

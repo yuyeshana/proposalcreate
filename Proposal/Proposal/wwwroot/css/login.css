@@ -1,0 +1,37 @@
+/* ログインページ全体のラッパー */
+/* フォームグループの間隔調整 */
+.form-group {
+    margin-bottom: 20px;
+}
+ 
+.login-wrapper {
+     min-height: 100vh;
+     display: flex;
+     align-items: flex-start;
+     justify-content: center;
+     padding-top: 100px;
+ }
+
+ .login-card {
+    max-width: 380px;
+}
+
+ /* ログインヘッダー領域 */
+ .login-header {
+     text-align: center;
+     margin-bottom: 30px;
+ }
+ /* メインタイトルのスタイル */
+ .login-header h2 {
+     font-size: 1.5rem;
+     font-weight: 600;
+     color: #333;
+     margin-bottom: 8px;
+ }
+ /* サブタイトルのスタイル */
+ .login-header p {
+     color: #666;
+     margin-bottom: 0;
+     font-size: 0.9rem;
+ }
+

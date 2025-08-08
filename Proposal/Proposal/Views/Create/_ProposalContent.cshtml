@@ -1,0 +1,87 @@
+@model Proposal.Models.ProposalContentModel
+
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/css/Proposal.css" />
+
+<div id="teianDiv" class="form-content">
+    <!-- 提案内容セクション -->
+    <div class="form-card">
+        <div class="card-header">
+            <h5><i class="fas fa-lightbulb me-2"></i>提案内容</h5>
+        </div>
+        <div class="card-body">
+            <div class="form-row-modern single">
+                <div class="form-group-modern">
+                    <label class="form-label-modern">現状・問題点 <span class="required-badge">必須</span></label>
+                    @Html.TextAreaFor(m => m.GenjyoMondaiten, new { @class = "form-control-modern", rows = "10", placeholder = "現状・問題点を入力してください" })
+                    @Html.ValidationMessageFor(m => m.GenjyoMondaiten, "", new { @class = "validation-message" })
+                </div>
+            </div>
+            <div class="form-row-modern single">
+                <div class="form-group-modern">
+                    <label class="form-label-modern">改善案 <span class="required-badge">必須</span></label>
+                    @Html.TextAreaFor(m => m.Kaizenan, new { @class = "form-control-modern", rows = "10", placeholder = "改善案を入力してください" })
+                    @Html.ValidationMessageFor(m => m.Kaizenan, "", new { @class = "validation-message" })
+                </div>
+            </div>
+            <div class="form-row-modern">
+                <div class="form-group-modern">
+                    <label class="form-label-modern">効果の種類 <span class="required-badge">必須</span></label>
+                    @Html.DropDownListFor(m => m.KoukaJishi, (ViewBag.Dropdowns as Proposal.BL.DropdownsViewModel)?.KoukaJishiList ?? new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(), new { @class = "form-control-modern" })
+                    @Html.ValidationMessageFor(m => m.KoukaJishi, "", new { @class = "validation-message" })
+                </div>
+            </div>
+            <div class="form-row-modern single">
+                <div class="form-group-modern">
+                    <label class="form-label-modern">効果 <span class="required-badge">必須</span></label>
+                    @Html.TextAreaFor(m => m.Kouka, new { @class = "form-control-modern", rows = "10", placeholder = "効果を入力してください" })
+                    @Html.ValidationMessageFor(m => m.Kouka, "", new { @class = "validation-message" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添付書類セクション -->
+    <div class="form-card">
+        <div class="card-header">
+            <h5><i class="fas fa-paperclip me-2"></i>添付書類</h5>
+        </div>
+        <div class="card-body">
+            <div class="form-row-modern single">
+                <div class="form-group-modern">
+                    <label class="form-label-modern">添付書類1</label>
+                    <input type="file" name="TenpuFile1" class="form-control-modern" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" />
+                    @Html.HiddenFor(m => m.TenpuFileName1)
+                </div>
+            </div>
+            <div class="form-row-modern single">
+                <div class="form-group-modern">
+                    <label class="form-label-modern">添付書類2</label>
+                    <input type="file" name="TenpuFile2" class="form-control-modern" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" />
+                    @Html.HiddenFor(m => m.TenpuFileName2)
+                </div>
+            </div>
+            <div class="form-row-modern single">
+                <div class="form-group-modern">
+                    <label class="form-label-modern">添付書類3</label>
+                    <input type="file" name="TenpuFile3" class="form-control-modern" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" />
+                    @Html.HiddenFor(m => m.TenpuFileName3)
+                </div>
+            </div>
+            <div class="form-row-modern single">
+                <div class="form-group-modern">
+                    <label class="form-label-modern">添付書類4</label>
+                    <input type="file" name="TenpuFile4" class="form-control-modern" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" />
+                    @Html.HiddenFor(m => m.TenpuFileName4)
+                </div>
+            </div>
+            <div class="form-row-modern single">
+                <div class="form-group-modern">
+                    <label class="form-label-modern">添付書類5</label>
+                    <input type="file" name="TenpuFile5" class="form-control-modern" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" />
+                    @Html.HiddenFor(m => m.TenpuFileName5)
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

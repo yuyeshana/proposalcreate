@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\yuyea\\Desktop\\\u62C5\u5F53\u6848\u4EF6\\\u4EE4\u548C7\u5E74\u5EA6\\\u63D0\u6848\u66F8\\code\\HL\\Proposal\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C7719D99-47ED-409A-AE4A-91DD6DFDDAC1}|Proposal\\Proposal.csproj|c:\\users\\yuyea\\desktop\\\u62C5\u5F53\u6848\u4EF6\\\u4EE4\u548C7\u5E74\u5EA6\\\u63D0\u6848\u66F8\\code\\hl\\proposal\\proposal\\dac\\logindac.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C7719D99-47ED-409A-AE4A-91DD6DFDDAC1}|Proposal\\Proposal.csproj|solutionrelative:proposal\\dac\\logindac.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "LoginDAC.cs",
+              "DocumentMoniker": "C:\\Users\\yuyea\\Desktop\\\u62C5\u5F53\u6848\u4EF6\\\u4EE4\u548C7\u5E74\u5EA6\\\u63D0\u6848\u66F8\\code\\HL\\Proposal\\Proposal\\DAC\\LoginDAC.cs",
+              "RelativeDocumentMoniker": "Proposal\\DAC\\LoginDAC.cs",
+              "ToolTip": "C:\\Users\\yuyea\\Desktop\\\u62C5\u5F53\u6848\u4EF6\\\u4EE4\u548C7\u5E74\u5EA6\\\u63D0\u6848\u66F8\\code\\HL\\Proposal\\Proposal\\DAC\\LoginDAC.cs",
+              "RelativeToolTip": "Proposal\\DAC\\LoginDAC.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-15T02:38:52.539Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

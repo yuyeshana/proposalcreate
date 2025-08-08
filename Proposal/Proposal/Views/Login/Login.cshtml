@@ -1,0 +1,76 @@
+@model Proposal.Models.LoginModel
+@{
+    ViewData["Title"] = "ログイン";
+}
+
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/login.css" />
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    <!-- ログインページメインコンテナ -->
+    <div class="login-wrapper">
+        <div class="content-card login-card">
+            <!-- ログインヘッダー部分 -->
+            <div class="login-header">
+                <h2>提案書作成提出システム</h2>
+                <p>ログイン</p>
+            </div>
+            
+            <!-- エラーメッセージ表示 -->
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger alert-custom" role="alert">
+                    @ViewBag.Error
+                </div>
+            }
+            
+            <!-- ログインフォーム -->
+            <form asp-action="Login" asp-controller="Login" method="post">
+                <!-- ユーザーID入力欄 -->
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        @Html.TextBoxFor(m => m.UserId, new { 
+                            @class = "form-control", 
+                            placeholder = "ユーザーID"
+                        })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.UserId, "", new { @class = "validation-message" })
+                </div>
+                
+                <!-- パスワード入力欄 -->
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        @Html.PasswordFor(m => m.Password, new { 
+                            @class = "form-control", 
+                            placeholder = "パスワード"
+                        })
+                    </div>
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "validation-message" })
+                </div>
+                
+                <!-- ログインボタン -->
+                <button type="submit" name="action" value="login" class="btn btn-primary btn-register">
+                    ログイン
+                </button>
+                
+                <!-- パスワード忘れリンク -->
+                <div class="link-area">
+                    <a href="/ForgetPass/ForgetPassword">
+                        パスワードをお忘れですか？
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>

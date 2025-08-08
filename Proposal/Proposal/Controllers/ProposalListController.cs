@@ -15,11 +15,12 @@ namespace Proposal.Controllers
         }
 
         [HttpGet]
-        public IActionResult ProposalList(int? year, int? status, int page = 1)
+        public IActionResult ProposalList(string? year, int? status, DateTime? dateFrom, DateTime? dateTo, int page = 1)
         {
             const int pageSize = 10;
             var bl = new ProposalListBL(_connectionString);
-            var result = bl.GetProposalList(year, status, page, pageSize);
+            string userId = HttpContext.Session.GetString("UserId");
+            var result = bl.GetProposalList(userId, year, status, dateFrom, dateTo, page, pageSize);
 
             ViewBag.Page = page;
             ViewBag.TotalPages = result.TotalPages;
@@ -27,6 +28,8 @@ namespace Proposal.Controllers
             ViewBag.PageSize = pageSize;
             ViewBag.SelectedYear = year;
             ViewBag.SelectedStatus = status;
+            ViewBag.DateFrom = dateFrom?.ToString("yyyy-MM-dd");
+            ViewBag.DateTo = dateTo?.ToString("yyyy-MM-dd");
             ViewBag.Years = result.Items
                 .Select(p => p.ProposalYear)
                 .Distinct()

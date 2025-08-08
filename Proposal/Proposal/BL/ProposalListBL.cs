@@ -14,9 +14,9 @@ namespace Proposal.BL
         }
 
         public (List<ProposalList> Items, int TotalCount, int TotalPages) GetProposalList(
-            int? year, int? status, int page, int pageSize)
+            string userId, string? year, int? status, DateTime? dateFrom, DateTime? dateTo, int page, int pageSize)
         {
-            return _proposallist.GetProposals(year, status, page, pageSize);
+            return _proposallist.GetProposals(userId, year, status, dateFrom, dateTo, page, pageSize);
         }
         public List<ProposalStatus> GetProposalStatuses()
         {

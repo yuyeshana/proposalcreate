@@ -200,14 +200,6 @@
     transform: translateY(-1px);
 }
 
-.show-more-btn {
-    background: #136AA8;
-    border-color: #136AA8;
-    color: white;
-    padding: 8px 10px;
-    white-space: nowrap;
-}
-
 .action-btn {
     padding: 10px 15px;
     font-size: 12px;

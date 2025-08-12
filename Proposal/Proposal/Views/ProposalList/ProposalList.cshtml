@@ -5,6 +5,8 @@
     var years = ViewBag.Years as List<string> ?? new List<string>();
     var statuses = ViewBag.Statuses as List<ProposalStatus> ?? new List<ProposalStatus>();
     string? selectedYear = ViewBag.SelectedYear as string;
+    string? dateFrom = ViewBag.DateFrom as string;
+    string? dateTo = ViewBag.DateTo as string;
     int? selectedStatus = ViewBag.SelectedStatus as int?;
     int page = ViewBag.Page;
     int totalPages = ViewBag.TotalPages;
@@ -48,9 +50,9 @@
                             <div class="form-group-modern">
                                 <label class="form-label-modern">提出日</label>
                                 <div class="date-range-container">
-                                    <input type="date" name="dateFrom" class="form-control-modern date-range-input" placeholder="開始日" />
+                                    <input type="date" name="dateFrom" class="form-control-modern date-range-input" value="@dateFrom" placeholder="開始日" />
                                     <span class="date-range-separator">〜</span>
-                                    <input type="date" name="dateTo" class="form-control-modern date-range-input" placeholder="終了日" />
+                                    <input type="date" name="dateTo" class="form-control-modern date-range-input" value="@dateTo" placeholder="終了日" />
                                 </div>
                             </div>
                             <div class="form-group-modern">

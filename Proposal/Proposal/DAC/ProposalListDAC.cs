@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using Microsoft.AspNetCore.Http;
 using Proposal.Models;
 
 namespace Proposal.DAC
@@ -15,7 +16,7 @@ namespace Proposal.DAC
         }
 
         public (List<ProposalList> Items, int TotalCount, int TotalPages) GetProposals(
-            int? year, int? status, int page, int pageSize)
+            string userId, string? year, int? status, DateTime? dateFrom, DateTime? dateTo, int page, int pageSize)
         {
             var items = new List<ProposalList>();
             int totalCount = 0;
@@ -24,36 +25,41 @@ namespace Proposal.DAC
             conn.Open();
 
             string filterSql = "";
-            if (year.HasValue) filterSql += " AND p.proposal_year = @Year";
+            if (!string.IsNullOrEmpty(year)) filterSql += " AND p.proposal_year = @Year";
             if (status.HasValue) filterSql += " AND p.status = @Status";
+            if (dateFrom.HasValue) filterSql += " AND p.submitted_date >= @DateFrom";
+            if (dateTo.HasValue) filterSql += " AND p.submitted_date <= @DateTo";
 
             string sql = $@"
             SELECT COUNT(*)
             FROM ProposalsDB.dbo.proposal p
-            INNER JOIN ProposalsDB.dbo.[user] u ON p.user_id = u.user_id
-            INNER JOIN ProposalsDB.dbo.[organizations] o ON u.shozoku_id = o.organizations_id
-            INNER JOIN ProposalsDB.dbo.[proposal_status] s ON p.status = s.status_id
-            INNER JOIN ProposalsDB.dbo.[group_info] g ON p.proposal_id = g.proposal_id
-            WHERE 1=1 {filterSql};
+            LEFT JOIN ProposalsDB.dbo.[user] u ON p.user_id = u.user_id
+            LEFT JOIN ProposalsDB.dbo.[organizations] o ON u.shozoku_id = o.organizations_id
+            LEFT JOIN ProposalsDB.dbo.[proposal_status] s ON p.status = s.status_id
+            LEFT JOIN ProposalsDB.dbo.[group_info] g ON p.proposal_id = g.proposal_id
+            WHERE u.user_id = @UserId {filterSql};
                 SELECT 
                     p.*, 
                     o.organizations_name,
                     s.status_name,
                     g.group_name
                 FROM ProposalsDB.dbo.proposal p
-                INNER JOIN ProposalsDB.dbo.[user] u ON p.user_id = u.user_id
-                INNER JOIN ProposalsDB.dbo.[organizations] o ON u.shozoku_id = o.organizations_id
-                INNER JOIN ProposalsDB.dbo.[proposal_status] s ON p.status = s.status_id
-                INNER JOIN ProposalsDB.dbo.[group_info] g ON p.proposal_id = g.proposal_id
-                WHERE 1=1 {filterSql}
+                LEFT JOIN ProposalsDB.dbo.[user] u ON p.user_id = u.user_id
+                LEFT JOIN ProposalsDB.dbo.[organizations] o ON u.shozoku_id = o.organizations_id
+                LEFT JOIN ProposalsDB.dbo.[proposal_status] s ON p.status = s.status_id
+                LEFT JOIN ProposalsDB.dbo.[group_info] g ON p.proposal_id = g.proposal_id
+                WHERE u.user_id = @UserId {filterSql}
                 ORDER BY p.created_time DESC
                 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
             ";
 
 
             using var cmd = new SqlCommand(sql, conn);
-            if (year.HasValue) cmd.Parameters.AddWithValue("@Year", year.Value.ToString());
+            cmd.Parameters.AddWithValue("@UserId", userId);
+            if (!string.IsNullOrEmpty(year)) cmd.Parameters.AddWithValue("@Year", year);
             if (status.HasValue) cmd.Parameters.AddWithValue("@Status", status.Value);
+            if (dateFrom.HasValue) cmd.Parameters.AddWithValue("@DateFrom", dateFrom.Value);
+            if (dateTo.HasValue) cmd.Parameters.AddWithValue("@DateTo", dateTo.Value);
             cmd.Parameters.AddWithValue("@Offset", (page - 1) * pageSize);
             cmd.Parameters.AddWithValue("@PageSize", pageSize);
 

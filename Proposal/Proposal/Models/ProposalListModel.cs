@@ -29,5 +29,6 @@ namespace Proposal.Models
         public string? ResponsibleSection4 { get; set; }
         public string? ResponsibleSection5 { get; set; }
         public int? AwardType { get; set; }
+        public bool Delete { get; set; }
     }
 }

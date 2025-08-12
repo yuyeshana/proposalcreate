@@ -435,7 +435,7 @@ function showDiv(target) {
 //初期化
 function initializeForm() {
     document.querySelectorAll("input[type='text'], textarea").forEach(e => {
-        if (e.id !== "teianYear") { 
+        if(!["teianYear", "BasicInfo_AffiliationName", "BasicInfo_DepartmentName", "BasicInfo_SectionName", "BasicInfo_SubsectionName"].includes(e.id)) {
             e.value = "";
         }
     });

@@ -22,7 +22,12 @@
 
 <div class="page-container">
     <div class="container">
-        <h2 class="page-title"><i class="fas fa-list me-3"></i>提案書一覧</h2>
+        <div class="d-flex align-items-center position-relative">
+            <h2 class="page-title text-center w-100"><i class="fas fa-list me-3"></i>提案書一覧</h2>
+            <a asp-controller="Proposal" asp-action="Index" class="btn btn-action btn-success position-absolute end-0">
+                <i class="fas fa-plus me-2"></i>提案書作成
+            </a>
+        </div>
     </div>
 
     <div class="main-content">
@@ -33,7 +38,7 @@
                     <h5><i class="fas fa-search me-2"></i>検索条件</h5>
                 </div>
                 <div class="card-body">
-                    <form method="get" asp-controller="ProposalList" asp-action="ProposalList">
+                    <form method="get" asp-controller="ProposalList" asp-action="Index">
                         <div class="form-row-modern three-cols">
                             <div class="form-group-modern">
                                 <label class="form-label-modern">提案年度</label>
@@ -41,8 +46,7 @@
                                     <option value="">すべて</option>
                                     @foreach (var y in years)
                                     {
-                                        <option value="@y" selected="@(selectedYear == y ? "selected" : null)">
-                                            令和 @y
+                                        <option value="@y" selected="@(selectedYear == y ? "selected" : null)"> @y
                                         </option>
                                     }
                                 </select>
@@ -76,7 +80,7 @@
                                 <i class="fas fa-search me-2"></i>検索
                             </button>
                             <button type="button" class="btn btn-action btn-outline-secondary"
-                                    onclick="location.href='@Url.Action("ProposalList", "ProposalList")'">
+                                    onclick="location.href='@Url.Action("Index", "ProposalList")'">
                                 <i class="fas fa-eraser me-2"></i>クリア
                             </button>
                             <button type="button" class="btn btn-action btn-secondary" onclick="history.back();">
@@ -122,7 +126,7 @@
                                         <tr class="table-row">
                                             <td class="text-center">
                                                 <a class="btn btn-action btn-primary btn-sm action-btn"
-                                                   asp-controller="ProposalList" asp-action="SetIdAndGoCreate" asp-route-id="@p.ProposalId">
+                                                   asp-controller="ProposalList" asp-action="showCreate" asp-route-id="@p.ProposalId">
                                                     <i class="fas fa-eye me-1"></i>表示
                                                 </a>
                                             </td>
@@ -152,18 +156,18 @@
                             <nav aria-label="ページナビゲーション" class="mt-4">
                                 <ul class="pagination justify-content-center flex-wrap">
                                     <li class="page-item @(page > 1 ? "" : "disabled")">
-                                        <a class="page-link" href="@Url.Action("ProposalList", new { year = selectedYear, status = selectedStatus, page = page - 1 })">
+                                        <a class="page-link" href="@Url.Action("Index", new { year = selectedYear, status = selectedStatus, page = page - 1 })">
                                             <span>&laquo;</span>
                                         </a>
                                     </li>
                                     @for (int i = 1; i <= totalPages; i++)
                                     {
                                         <li class="page-item @(i == page ? "active" : "")">
-                                            <a class="page-link" href="@Url.Action("ProposalList", new { year = selectedYear, status = selectedStatus, page = i })">@i</a>
+                                            <a class="page-link" href="@Url.Action("Index", new { year = selectedYear, status = selectedStatus, page = i })">@i</a>
                                         </li>
                                     }
                                     <li class="page-item @(page < totalPages ? "" : "disabled")">
-                                        <a class="page-link" href="@Url.Action("ProposalList", new { year = selectedYear, status = selectedStatus, page = page + 1 })">
+                                        <a class="page-link" href="@Url.Action("Index", new { year = selectedYear, status = selectedStatus, page = page + 1 })">
                                             <span>&raquo;</span>
                                         </a>
                                     </li>

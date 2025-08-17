@@ -9,21 +9,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Proposal.DAC
 {
-    public class CreateDAC
+    public class ProposalDAC
     {
         private readonly string _connectionString;
 
-        public CreateDAC()
+        public ProposalDAC()
         {
 
         }
-        public CreateDAC(string connectionString)
+        public ProposalDAC(string connectionString)
         {
             _connectionString = connectionString;
         }
 
         //提案書詳細登録
-        public int SqlInsertproposals_detail(CreateModel basicInfo, ProposalContentModel proposalContent)
+        public int SqlInsertproposals_detail(ProposalModel basicInfo, ProposalContentModel proposalContent)
         {
             using var conn = new SqlConnection(_connectionString);
             conn.Open();
@@ -131,17 +131,125 @@ namespace Proposal.DAC
 
             string sql = @"
                 SELECT 
+                    A.organizations_id as subsection_id,
+                    B.organizations_id as section_id,
+                    C.organizations_id as department_id,
+                    D.organizations_id as affiliation_id,
+                    A.organizations_name as subsection_name,
+                    B.organizations_name as section_name,
+                    C.organizations_name as department_name,
+                    D.organizations_name as affiliation_name,
+
+                    A1.organizations_id as subsection_id_1,
+                    B1.organizations_id as section_id_1,
+                    C1.organizations_id as department_id_1,
+                    D1.organizations_id as affiliation_id_1,
+                    A1.organizations_name as subsection_name_1,
+                    B1.organizations_name as section_name_1,
+                    C1.organizations_name as department_name_1,
+                    D1.organizations_name as affiliation_name_1,
+                    p.name_1,
+
+                    A2.organizations_id as subsection_id_2,
+                    B2.organizations_id as section_id_2,
+                    C2.organizations_id as department_id_2,
+                    D2.organizations_id as affiliation_id_2,
+                    A2.organizations_name as subsection_name_2, 
+                    B2.organizations_name as section_name_2,
+                    C2.organizations_name as department_name_2,
+                    D2.organizations_name as affiliation_name_2,
+                    p.name_2,
+
+                    A3.organizations_id as subsection_id_3,
+                    B3.organizations_id as section_id_3,
+                    C3.organizations_id as department_id_3,
+                    D3.organizations_id as affiliation_id_3,
+                    A3.organizations_name as subsection_name_3,
+                    B3.organizations_name as section_name_3,
+                    C3.organizations_name as department_name_3,
+                    D3.organizations_name as affiliation_name_3,
+                    p.name_3,
+
+                    A4.organizations_id as subsection_id_4,
+                    B4.organizations_id as section_id_4,
+                    C4.organizations_id as department_id_4,
+                    D4.organizations_id as affiliation_id_4,
+                    A4.organizations_name as subsection_name_4,
+                    B4.organizations_name as section_name_4,
+                    C4.organizations_name as department_name_4,
+                    D4.organizations_name as affiliation_name_4,
+                    p.name_4,
+
+                    A5.organizations_id as subsection_id_5,
+                    B5.organizations_id as section_id_5,
+                    C5.organizations_id as department_id_5,
+                    D5.organizations_id as affiliation_id_5,
+                    A5.organizations_name as subsection_name_5,
+                    B5.organizations_name as section_name_5,
+                    C5.organizations_name as department_name_5,
+                    D5.organizations_name as affiliation_name_5,
+                    p.name_5,
+
+                    A6.organizations_id as subsection_id_6,
+                    B6.organizations_id as section_id_6,
+                    C6.organizations_id as department_id_6,
+                    D6.organizations_id as affiliation_id_6,
+                    A6.organizations_name as subsection_name_6,
+                    B6.organizations_name as section_name_6,
+                    C6.organizations_name as department_name_6,
+                    D6.organizations_name as affiliation_name_6,
+                    p.name_6,
+
+                    A7.organizations_id as subsection_id_7,
+                    B7.organizations_id as section_id_7,
+                    C7.organizations_id as department_id_7,
+                    D7.organizations_id as affiliation_id_7,
+                    A7.organizations_name as subsection_name_7,
+                    B7.organizations_name as section_name_7,
+                    C7.organizations_name as department_name_7,
+                    D7.organizations_name as affiliation_name_7,
+                    p.name_7,
+
+                    A8.organizations_id as subsection_id_8,
+                    B8.organizations_id as section_id_8,
+                    C8.organizations_id as department_id_8,
+                    D8.organizations_id as affiliation_id_8,
+                    A8.organizations_name as subsection_name_8,
+                    B8.organizations_name as section_name_8,
+                    C8.organizations_name as department_name_8,
+                    D8.organizations_name as affiliation_name_8,
+                    p.name_8,
+
+                    A9.organizations_id as subsection_id_9,
+                    B9.organizations_id as section_id_9,
+                    C9.organizations_id as department_id_9,
+                    D9.organizations_id as affiliation_id_9,
+                    A9.organizations_name as subsection_name_9,
+                    B9.organizations_name as section_name_9,
+                    C9.organizations_name as department_name_9,
+                    D9.organizations_name as affiliation_name_9,
+                    p.name_9,
+
+                    A10.organizations_id as subsection_id_10,
+                    B10.organizations_id as section_id_10,
+                    C10.organizations_id as department_id_10,
+                    D10.organizations_id as affiliation_id_10,
+                    A10.organizations_name as subsection_name_10,
+                    B10.organizations_name as section_name_10,
+                    C10.organizations_name as department_name_10,
+                    D10.organizations_name as affiliation_name_10,
+                    p.name_10,
+                    
                     p.proposal_id,
                     p.user_id,
                     p.status,
                     p.proposal_year,
                     p.proposal_name,
                     p.proposal_type,
-                    p.affiliation_id,
-                    p.department_id,
-                    p.section_id,
-                    p.subsection_id,
+                    p.proposal_kbn,
+                    p.organizations_id,
                     p.name,
+                    p.group_name,
                     p.first_reviewer_affiliation_id,
                     p.first_reviewer_department_id,
                     p.first_reviewer_section_id,
@@ -159,7 +267,52 @@ namespace Proposal.DAC
                     p.kouka,
                     p.created_time,
                     p.updated_time
-                FROM proposal p
+                FROM 
+                    proposal p
+                LEFT JOIN organizations A ON A.organizations_id = p.organizations_id
+                LEFT JOIN organizations B ON B.organizations_id = A.organizations_parent_id
+                LEFT JOIN organizations C ON C.organizations_id = B.organizations_parent_id
+                LEFT JOIN organizations D ON D.organizations_id = C.organizations_parent_id
+                LEFT JOIN organizations A1 ON A1.organizations_id = p.organizations_id_1
+                LEFT JOIN organizations B1 ON B1.organizations_id = A1.organizations_parent_id
+                LEFT JOIN organizations C1 ON C1.organizations_id = B1.organizations_parent_id
+                LEFT JOIN organizations D1 ON D1.organizations_id = C1.organizations_parent_id
+                LEFT JOIN organizations A2 ON A2.organizations_id = p.organizations_id_2
+                LEFT JOIN organizations B2 ON B2.organizations_id = A2.organizations_parent_id
+                LEFT JOIN organizations C2 ON C2.organizations_id = B2.organizations_parent_id
+                LEFT JOIN organizations D2 ON D2.organizations_id = C2.organizations_parent_id
+                LEFT JOIN organizations A3 ON A3.organizations_id = p.organizations_id_3
+                LEFT JOIN organizations B3 ON B3.organizations_id = A3.organizations_parent_id
+                LEFT JOIN organizations C3 ON C3.organizations_id = B3.organizations_parent_id
+                LEFT JOIN organizations D3 ON D3.organizations_id = C3.organizations_parent_id
+                LEFT JOIN organizations A4 ON A4.organizations_id = p.organizations_id_4
+                LEFT JOIN organizations B4 ON B4.organizations_id = A4.organizations_parent_id
+                LEFT JOIN organizations C4 ON C4.organizations_id = B4.organizations_parent_id
+                LEFT JOIN organizations D4 ON D4.organizations_id = C4.organizations_parent_id
+                LEFT JOIN organizations A5 ON A5.organizations_id = p.organizations_id_5
+                LEFT JOIN organizations B5 ON B5.organizations_id = A5.organizations_parent_id
+                LEFT JOIN organizations C5 ON C5.organizations_id = B5.organizations_parent_id
+                LEFT JOIN organizations D5 ON D5.organizations_id = C5.organizations_parent_id
+                LEFT JOIN organizations A6 ON A6.organizations_id = p.organizations_id_6
+                LEFT JOIN organizations B6 ON B6.organizations_id = A6.organizations_parent_id
+                LEFT JOIN organizations C6 ON C6.organizations_id = B6.organizations_parent_id
+                LEFT JOIN organizations D6 ON D6.organizations_id = C6.organizations_parent_id
+                LEFT JOIN organizations A7 ON A7.organizations_id = p.organizations_id_7
+                LEFT JOIN organizations B7 ON B7.organizations_id = A7.organizations_parent_id
+                LEFT JOIN organizations C7 ON C7.organizations_id = B7.organizations_parent_id
+                LEFT JOIN organizations D7 ON D7.organizations_id = C7.organizations_parent_id
+                LEFT JOIN organizations A8 ON A8.organizations_id = p.organizations_id_8
+                LEFT JOIN organizations B8 ON B8.organizations_id = A8.organizations_parent_id
+                LEFT JOIN organizations C8 ON C8.organizations_id = B8.organizations_parent_id
+                LEFT JOIN organizations D8 ON D8.organizations_id = C8.organizations_parent_id
+                LEFT JOIN organizations A9 ON A9.organizations_id = p.organizations_id_9
+                LEFT JOIN organizations B9 ON B9.organizations_id = A9.organizations_parent_id
+                LEFT JOIN organizations C9 ON C9.organizations_id = B9.organizations_parent_id
+                LEFT JOIN organizations D9 ON D9.organizations_id = C9.organizations_parent_id
+                LEFT JOIN organizations A10 ON A10.organizations_id = p.organizations_id_10
+                LEFT JOIN organizations B10 ON B10.organizations_id = A10.organizations_parent_id
+                LEFT JOIN organizations C10 ON C10.organizations_id = B10.organizations_parent_id
+                LEFT JOIN organizations D10 ON D10.organizations_id = C10.organizations_parent_id
                 WHERE p.proposal_id = @id";
 
             using var cmd = new SqlCommand(sql, conn);
@@ -180,33 +333,33 @@ namespace Proposal.DAC
             conn.Open();
 
             string sql = @"
-                SELECT 
-                    u.shozoku_id as affiliation_id,
-                    u.department_id,
-                    u.section_id,
-                    u.subsection_id,
-                    A.organizations_name as affiliation_name,
-                    B.organizations_name as department_name,
-                    K.organizations_name as section_name,
-                    T.organizations_name as subsection_name
+                SELECT
+                    A.organizations_id as subsection_id,
+                    B.organizations_id as section_id,
+                    C.organizations_id as department_id,
+                    D.organizations_id as affiliation_id,
+                    A.organizations_name as subsection_name,
+                    B.organizations_name as section_name,
+                    C.organizations_name as department_name,
+                    D.organizations_name as affiliation_name
                 FROM 
                     [user] u 
                 LEFT JOIN
                     organizations A
                 ON
-                    A.organizations_id = u.shozoku_id
+                    A.organizations_id = u.organizations_id
                 LEFT JOIN
                     organizations B
                 ON
-                    B.organizations_id = u.department_id
+                    B.organizations_id = A.organizations_parent_id
                 LEFT JOIN
-                    organizations K
+                    organizations C
                 ON
-                    K.organizations_id = u.section_id
+                    C.organizations_id = B.organizations_parent_id
                 LEFT JOIN
-                    organizations T
+                    organizations D
                 ON
-                    T.organizations_id = u.subsection_id
+                    D.organizations_id = C.organizations_parent_id
                 WHERE
                     u.user_id = @userid";
 
@@ -220,7 +373,7 @@ namespace Proposal.DAC
         }
 
         //提案書詳細更新
-        public void SqlUpdateproposals_detail(CreateModel basicInfo, ProposalContentModel proposalContent)
+        public void SqlUpdateproposals_detail(ProposalModel basicInfo, ProposalContentModel proposalContent)
         {
             using var conn = new SqlConnection(_connectionString);
             conn.Open();
@@ -284,11 +437,11 @@ namespace Proposal.DAC
             cmd.Parameters.AddWithValue("@attachmentfilename3", proposalContent.TenpuFileName3 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@attachmentfilename4", proposalContent.TenpuFileName4 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@attachmentfilename5", proposalContent.TenpuFileName5 ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@proposal_id", basicInfo.Id);
+            cmd.Parameters.AddWithValue("@proposal_id", basicInfo.ProposalId);
             cmd.ExecuteNonQuery();
         }
 
-        public int SqlInsertproposals_detailWithContent(CreateModel basicInfo, ProposalContentModel proposalContent)
+        public int SqlInsertproposals_detailWithContent(ProposalModel basicInfo, ProposalContentModel proposalContent)
         {
             using var conn = new SqlConnection(_connectionString);
             conn.Open();
@@ -389,7 +542,7 @@ namespace Proposal.DAC
             return result != null ? Convert.ToInt32(result) : 0;
         }
 
-        public void SqlUpdateproposals_detailWithContent(CreateModel basicInfo, ProposalContentModel proposalContent)
+        public void SqlUpdateproposals_detailWithContent(ProposalModel basicInfo, ProposalContentModel proposalContent)
         {
             using var conn = new SqlConnection(_connectionString);
             conn.Open();
@@ -453,32 +606,8 @@ namespace Proposal.DAC
             cmd.Parameters.AddWithValue("@attachmentfilename3", proposalContent.TenpuFileName3 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@attachmentfilename4", proposalContent.TenpuFileName4 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@attachmentfilename5", proposalContent.TenpuFileName5 ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@proposal_id", basicInfo.Id);
+            cmd.Parameters.AddWithValue("@proposal_id", basicInfo.ProposalId);
             cmd.ExecuteNonQuery();
-        }
-
-      
-        // 提案種類（ProposalType）の一覧をデータベースから取得するメソッド
-        public List<ProposalType> GetProposalTypes()
-        {
-            var list = new List<ProposalType>();
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
-                var cmd = new SqlCommand("SELECT kbn, kbn_name FROM proposal_kbn", conn);
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        list.Add(new ProposalType
-                        {
-                            Kbn = reader["kbn"].ToString(),
-                            KbnName = reader["kbn_name"].ToString()
-                        });
-                    }
-                }
-            }
-            return list;
         }
 
         // 提案区分の一覧をデータベースから取得するメソッド
@@ -534,15 +663,15 @@ namespace Proposal.DAC
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var cmd = new SqlCommand("SELECT affiliation_id, affiliation_name FROM affiliation", conn);
+                var cmd = new SqlCommand("SELECT organizations_id, organizations_name FROM organizations where organizations_parent_id IS NULL", conn);
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
                         list.Add(new Affiliation
                         {
-                            Id = reader["affiliation_id"].ToString(),
-                            Shozoku = reader["affiliation_name"].ToString()
+                            Affiliation_id = reader["organizations_id"].ToString(),
+                            Affiliation_name = reader["organizations_name"].ToString()
                         });
                     }
                 }
@@ -550,22 +679,23 @@ namespace Proposal.DAC
             return list;
         }
 
-        // 部・署をデータベースから取得するメソッド
-        public List<Department> GetDepartments()
+        // 所属IDに基づいて部・署をデータベースから取得するメソッド
+        public List<Department> GetDepartmentsByAffiliation(string affiliationId)
         {
             var list = new List<Department>();
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var cmd = new SqlCommand("SELECT department_id, department_name FROM department", conn);
+                var cmd = new SqlCommand("SELECT organizations_id, organizations_name FROM organizations WHERE organizations_parent_id = @affiliationId", conn);
+                cmd.Parameters.AddWithValue("@affiliationId", affiliationId);
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
                         list.Add(new Department
                         {
-                            Department_id = reader["department_id"].ToString(),
-                            Department_name = reader["department_name"].ToString()
+                            Department_id = reader["organizations_id"].ToString(),
+                            Department_name = reader["organizations_name"].ToString()
                         });
                     }
                 }
@@ -573,22 +703,23 @@ namespace Proposal.DAC
             return list;
         }
 
-        // 課・部門をデータベースから取得するメソッド
-        public List<Section> GetSections()
+        // 部・署IDに基づいて課・部門をデータベースから取得するメソッド
+        public List<Section> GetSectionsByDepartment(string departmentId)
         {
             var list = new List<Section>();
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var cmd = new SqlCommand("SELECT section_id, section_name FROM section", conn);
+                var cmd = new SqlCommand("SELECT organizations_id, organizations_name FROM organizations WHERE organizations_parent_id = @departmentId", conn);
+                cmd.Parameters.AddWithValue("@departmentId", departmentId);
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
                         list.Add(new Section
                         {
-                            Section_id = reader["section_id"].ToString(),
-                            Section_name = reader["section_name"].ToString()
+                            Section_id = reader["organizations_id"].ToString(),
+                            Section_name = reader["organizations_name"].ToString()
                         });
                     }
                 }
@@ -596,143 +727,23 @@ namespace Proposal.DAC
             return list;
         }
 
-        // 係・担当をデータベースから取得するメソッド
-        public List<Subsection> GetSubsections()
+        // 課・部門IDに基づいて係・担当をデータベースから取得するメソッド
+        public List<Subsection> GetSubsectionsBySection(string sectionId)
         {
             var list = new List<Subsection>();
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var cmd = new SqlCommand("SELECT subsection_id, subsection_name FROM subsection", conn);
+                var cmd = new SqlCommand("SELECT organizations_id, organizations_name FROM organizations WHERE organizations_parent_id = @sectionId", conn);
+                cmd.Parameters.AddWithValue("@sectionId", sectionId);
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
                         list.Add(new Subsection
                         {
-                            Subsection_id = reader["subsection_id"].ToString(),
-                            Subsection_name = reader["subsection_name"].ToString()
-                        });
-                    }
-                }
-            }
-            return list;
-        }
-
-        // 既存のグループデータを削除するメソッド
-        public void DeleteGroupInfo(string proposalId)
-        {
-            using var conn = new SqlConnection(_connectionString);
-            conn.Open();
-            var cmd = new SqlCommand("DELETE FROM group_info WHERE proposal_id = @proposalId", conn);
-            cmd.Parameters.AddWithValue("@proposalId", proposalId);
-            cmd.ExecuteNonQuery();
-        }
-
-        // グループデータを挿入するメソッド
-        public void InsertGroupInfo(CreateModel model)
-        {
-            using var conn = new SqlConnection(_connectionString);
-            conn.Open();
-            // 既存のグループデータを削除
-            var delCmd = new SqlCommand("DELETE FROM group_info WHERE proposal_id = @proposalId", conn);
-            delCmd.Parameters.AddWithValue("@proposalId", model.Id);
-            delCmd.ExecuteNonQuery();
-
-            // 10人分のメンバー情報を挿入
-            var sql = @"INSERT INTO group_info (
-                proposal_id,
-                group_name,
-                affiliation_id_1, department_id_1, section_id_1, subsection_id_1, name_1,
-                affiliation_id_2, department_id_2, section_id_2, subsection_id_2, name_2,
-                affiliation_id_3, department_id_3, section_id_3, subsection_id_3, name_3,
-                affiliation_id_4, department_id_4, section_id_4, subsection_id_4, name_4,
-                affiliation_id_5, department_id_5, section_id_5, subsection_id_5, name_5,
-                affiliation_id_6, department_id_6, section_id_6, subsection_id_6, name_6,
-                affiliation_id_7, department_id_7, section_id_7, subsection_id_7, name_7,
-                affiliation_id_8, department_id_8, section_id_8, subsection_id_8, name_8,
-                affiliation_id_9, department_id_9, section_id_9, subsection_id_9, name_9,
-                affiliation_id_10, department_id_10, section_id_10, subsection_id_10, name_10
-            ) VALUES (
-                @proposal_id,
-                @group_name,
-                @affiliation_id_1, @department_id_1, @section_id_1, @subsection_id_1, @name_1,
-                @affiliation_id_2, @department_id_2, @section_id_2, @subsection_id_2, @name_2,
-                @affiliation_id_3, @department_id_3, @section_id_3, @subsection_id_3, @name_3,
-                @affiliation_id_4, @department_id_4, @section_id_4, @subsection_id_4, @name_4,
-                @affiliation_id_5, @department_id_5, @section_id_5, @subsection_id_5, @name_5,
-                @affiliation_id_6, @department_id_6, @section_id_6, @subsection_id_6, @name_6,
-                @affiliation_id_7, @department_id_7, @section_id_7, @subsection_id_7, @name_7,
-                @affiliation_id_8, @department_id_8, @section_id_8, @subsection_id_8, @name_8,
-                @affiliation_id_9, @department_id_9, @section_id_9, @subsection_id_9, @name_9,
-                @affiliation_id_10, @department_id_10, @section_id_10, @subsection_id_10, @name_10
-            )";
-            var cmd = new SqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@proposal_id", model.Id);
-            cmd.Parameters.AddWithValue("@group_name", model.GroupMei ?? (object)DBNull.Value);
-            for (int i = 0; i < 10; i++)
-            {
-                var m = (model.GroupMembers != null && i < model.GroupMembers.Count) ? model.GroupMembers[i] : null;
-                cmd.Parameters.AddWithValue($"@affiliation_id_{i + 1}", m?.AffiliationId ?? "");
-                cmd.Parameters.AddWithValue($"@department_id_{i + 1}", m?.DepartmentId ?? "");
-                cmd.Parameters.AddWithValue($"@section_id_{i + 1}", m?.SectionId ?? "");
-                cmd.Parameters.AddWithValue($"@subsection_id_{i + 1}", m?.SubsectionId ?? "");
-                cmd.Parameters.AddWithValue($"@name_{i + 1}", m?.Name ?? "");
-            }
-            cmd.ExecuteNonQuery();
-        }
-
-        // 指定proposal_idでgroup_infoの10人分のメンバー情報を取得（JOINで所属情報も取得）
-        public DataTable GetGroupInfoByProposalId(string proposalId)
-        {
-            using var conn = new SqlConnection(_connectionString);
-            conn.Open();
-            string sql = @"SELECT 
-                g.group_name,
-                g.affiliation_id_1, g.department_id_1, g.section_id_1, g.subsection_id_1, g.name_1,
-                g.affiliation_id_2, g.department_id_2, g.section_id_2, g.subsection_id_2, g.name_2,
-                g.affiliation_id_3, g.department_id_3, g.section_id_3, g.subsection_id_3, g.name_3,
-                g.affiliation_id_4, g.department_id_4, g.section_id_4, g.subsection_id_4, g.name_4,
-                g.affiliation_id_5, g.department_id_5, g.section_id_5, g.subsection_id_5, g.name_5,
-                g.affiliation_id_6, g.department_id_6, g.section_id_6, g.subsection_id_6, g.name_6,
-                g.affiliation_id_7, g.department_id_7, g.section_id_7, g.subsection_id_7, g.name_7,
-                g.affiliation_id_8, g.department_id_8, g.section_id_8, g.subsection_id_8, g.name_8,
-                g.affiliation_id_9, g.department_id_9, g.section_id_9, g.subsection_id_9, g.name_9,
-                g.affiliation_id_10, g.department_id_10, g.section_id_10, g.subsection_id_10, g.name_10
-            FROM group_info g
-            WHERE g.proposal_id = @proposalId";
-            using var cmd = new SqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@proposalId", proposalId);
-            using var adapter = new SqlDataAdapter(cmd);
-            var dataTable = new DataTable();
-            adapter.Fill(dataTable);
-            return dataTable;
-        }
-
-        /// <summary>
-        /// 获取所有组织架构数据
-        /// </summary>
-        public List<Organization> GetAllOrganizations()
-        {
-            var list = new List<Organization>();
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
-                var cmd = new SqlCommand(@"
-                    SELECT organizations_id, organizations_name, organizations_parent_id, created_time 
-                    FROM organizations 
-                    ORDER BY organizations_id, organizations_name", conn);
-                
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        list.Add(new Organization
-                        {
-                            OrganizationId = reader["organizations_id"].ToString(),
-                            OrganizationName = reader["organizations_name"].ToString(),
-                            OrganizationParentId = reader["organizations_parent_id"]?.ToString(),
-                            OrganizationCreatedTime = Convert.ToDateTime(reader["created_time"])
+                            Subsection_id = reader["organizations_id"].ToString(),
+                            Subsection_name = reader["organizations_name"].ToString()
                         });
                     }
                 }

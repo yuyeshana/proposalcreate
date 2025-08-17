@@ -43,7 +43,7 @@ namespace Proposal.Controllers
             var userId = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userId))
             {
-                return RedirectToAction("Login", "Login");
+                return RedirectToAction("Index", "Login");
             }
 
             // モデルバリデーション失敗 → エラー表示
@@ -65,7 +65,7 @@ namespace Proposal.Controllers
 
             // ログインへリダイレクト（メッセージ付き）
             TempData["Message"] = "パスワードが変更されました。ログインしてください。";
-            return RedirectToAction("Login", "Login");
+            return RedirectToAction("Index", "Login");
         }
     }
 }

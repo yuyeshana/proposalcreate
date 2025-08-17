@@ -15,6 +15,12 @@ namespace Proposal.DAC
             _connectionString = connectionString;
         }
 
+        /// <summary>
+        /// 提案書一覧を取得する
+        /// </summary>
+        /// <param name="userId">ユーザーID</param>
+        /// <param name="year">提案年度</param>
+        /// <param name="status">提案状態</param>
         public (List<ProposalList> Items, int TotalCount, int TotalPages) GetProposals(
             string userId, string? year, int? status, DateTime? dateFrom, DateTime? dateTo, int page, int pageSize)
         {
@@ -36,18 +42,15 @@ namespace Proposal.DAC
             LEFT JOIN ProposalsDB.dbo.[user] u ON p.user_id = u.user_id
             LEFT JOIN ProposalsDB.dbo.[organizations] o ON u.shozoku_id = o.organizations_id
             LEFT JOIN ProposalsDB.dbo.[proposal_status] s ON p.status = s.status_id
-            LEFT JOIN ProposalsDB.dbo.[group_info] g ON p.proposal_id = g.proposal_id
             WHERE u.user_id = @UserId {filterSql};
                 SELECT 
                     p.*, 
                     o.organizations_name,
-                    s.status_name,
-                    g.group_name
+                    s.status_name
                 FROM ProposalsDB.dbo.proposal p
                 LEFT JOIN ProposalsDB.dbo.[user] u ON p.user_id = u.user_id
                 LEFT JOIN ProposalsDB.dbo.[organizations] o ON u.shozoku_id = o.organizations_id
                 LEFT JOIN ProposalsDB.dbo.[proposal_status] s ON p.status = s.status_id
-                LEFT JOIN ProposalsDB.dbo.[group_info] g ON p.proposal_id = g.proposal_id
                 WHERE u.user_id = @UserId {filterSql}
                 ORDER BY p.created_time DESC
                 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
@@ -97,6 +100,11 @@ namespace Proposal.DAC
             int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
             return (items, totalCount, totalPages);
         }
+
+        /// <summary>
+        /// 提案状態一覧を取得する
+        /// </summary>
+        /// <returns>提案状態一覧</returns>
         public List<ProposalStatus> GetProposalStatuses()
         {
             var statuses = new List<ProposalStatus>();

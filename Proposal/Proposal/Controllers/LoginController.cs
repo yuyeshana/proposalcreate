@@ -1,11 +1,7 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Configuration;
 using Proposal.BL;
 using Proposal.Models;
-using System.Diagnostics;
-using System.Reflection.PortableExecutable;
 
 namespace Proposal.Controllers
 {
@@ -15,49 +11,41 @@ namespace Proposal.Controllers
         private readonly IConfiguration _configuration;
         private readonly LoginBL _loginBL;
 
-        
         public LoginController(ILogger<LoginController> logger, IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
-            var connStr = _configuration.GetConnectionString("ProposalDB");
+            var connStr = _configuration.GetConnectionString("ProposalDB") 
+                ?? throw new InvalidOperationException("ProposalDB connection string not found");
             _loginBL = new LoginBL(connStr);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
         /// <summary>
-        /// ログイン画面を表示します。既にログインしている場合は適切なページへリダイレクトされます。
+        /// ログイン画面を表示する
         /// </summary>
-        /// <returns>
-        /// ログインしていない場合はログイン画面を返します。<br/>
-        /// ログイン済みかつパスワード未設定の場合は「ChangePassword」画面へリダイレクトします。<br/>
-        /// それ以外の場合は「Menu」画面へリダイレクトします。
-        /// </returns>
+        /// <returns>ログイン画面</returns>
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Index()
         {
-            
             var userId = HttpContext.Session.GetString("UserId");
-            var SetPass = HttpContext.Session.GetString("SetPass");
+            var setPass = HttpContext.Session.GetString("SetPass");
 
             if (!string.IsNullOrEmpty(userId))
             {
-                if (SetPass == "1")
+                if (setPass == "1")
                 {
-                     return RedirectToAction("Menu");
+                    return RedirectToAction("Index", "ProposalList");
                 }
                 return RedirectToAction("ChangePassword");
             }
-            return View(new LoginModel());
+            return View("Login", new LoginModel());
         }
 
         /// <summary>
         /// ログイン処理を実行します。
+        /// </summary>
+        /// <param name="model">ログインモデル</param>
+        /// <param name="action">アクション名</param>
         /// <returns>
         /// 入力エラーがある場合はログイン画面を再表示します。<br/>
         /// ユーザー認証に失敗した場合もログイン画面を再表示します。<br/>
@@ -65,20 +53,21 @@ namespace Proposal.Controllers
         /// それ以外の場合は「Menu」画面に遷移します。
         /// </returns>
         [HttpPost]
-        public IActionResult Login(LoginModel model, string action)
+        public IActionResult Index(LoginModel model, string action)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View("Login", model);
             }
 
             var user = _loginBL.ValidateUser(model);
             if (user == null)
             {
                 ViewBag.Error = "ユーザーIDまたはパスワードが間違っています。";
-                return View(model);
+                return View("Login", model);
             }
-            // 登录成功，设置 session
+
+            // ログイン成功、セッションを設定
             HttpContext.Session.SetString("UserId", user.UserId);
             HttpContext.Session.SetString("SetPass", user.Registration_status ? "1" : "0");
 
@@ -86,25 +75,7 @@ namespace Proposal.Controllers
             {
                 return RedirectToAction("ChangePassword");
             }
-            return RedirectToAction("Menu");
-        }
-
-
-
-
-        [Route("proposal/menu")]
-        public IActionResult Menu()
-        {
-            // 检查是否已登录
-            var userId = HttpContext.Session.GetString("UserId");
-            if (string.IsNullOrEmpty(userId))
-            {
-                // 未登录，跳转到登录页面
-                return RedirectToAction("Login");
-            }
-
-            ViewBag.UserKbn = HttpContext.Session.GetString("UserKbn");
-            return View("~/Views/ForgetPass/ChangePassword.cshtml");
+            return RedirectToAction("Index", "proposalList");
         }
     }
 }

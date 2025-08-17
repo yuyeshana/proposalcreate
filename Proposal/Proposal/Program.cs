@@ -6,6 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// 注册验证器服务
+builder.Services.AddScoped<Proposal.Services.ProposalValidator>();
+
 var mvcBuilder = builder.Services.AddControllersWithViews();
 
 if (builder.Environment.IsDevelopment())
@@ -35,7 +38,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/Login/Index");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
@@ -52,11 +55,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=Login}/{id?}");
-
-app.MapGet("/proposal", context => {
-    context.Response.Redirect("/proposal/login");
-    return Task.CompletedTask;
-});
+    pattern: "{controller=Login}/{action=Index}/{id?}");
 
 app.Run();

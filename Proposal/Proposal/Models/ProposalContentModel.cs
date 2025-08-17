@@ -5,7 +5,7 @@ namespace Proposal.Models
 {
     public class ProposalContentModel
     {
-        public string? Id { get; set; }
+        public string? ProposalId { get; set; }
         public string? UserId { get; set; }
 
         [Required(ErrorMessage = "現状・問題点は必須です")]

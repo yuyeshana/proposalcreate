@@ -189,6 +189,25 @@ button:active,
     transform: translateY(-1px);
 }
 
+/* 追加ボタンのスタイル */
+.btn-add-member {
+    background-color: #136AA8;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 13px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-add-member:hover {
+    background-color: #0f5a8a;
+    color: white;
+    transform: translateY(-1px);
+}
+
 /* ================== フォームエリア ================== */
 
 /* フォームコンテンツ */

@@ -1,6 +1,8 @@
-﻿@model Proposal.Models.CreateViewModel
+﻿@model Proposal.Models.ProposalViewModel
 @section Scripts {
-    <script src="~/js/Create.js"></script>
+    @* <script src="~/js/Proposal.js"></script> *@
+    <script src="~/js/CascadingDropdown.js"></script>
+    <script src="~/js/ProposalCreate.js"></script>
     @await Html.PartialAsync("_ValidationScriptsPartial")
 }
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,10 +13,10 @@
     var showProposalContentFlag = (ViewBag.ShowProposalContent == true) ? "true" : "false";
     
     // 添加空值检查，防止 ViewDataDictionary 构造函数失败
-    var basicInfo = Model?.BasicInfo ?? new Proposal.Models.CreateModel();
+    var basicInfo = Model?.BasicInfo ?? new Proposal.Models.ProposalModel();
     var proposalContent = Model?.ProposalContent ?? new Proposal.Models.ProposalContentModel();
     
-    var basicInfoViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<Proposal.Models.CreateModel>(ViewData, basicInfo);
+    var basicInfoViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<Proposal.Models.ProposalModel>(ViewData, basicInfo);
     basicInfoViewData.TemplateInfo.HtmlFieldPrefix = "BasicInfo";
     var proposalContentViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary<Proposal.Models.ProposalContentModel>(ViewData, proposalContent);
     proposalContentViewData.TemplateInfo.HtmlFieldPrefix = "ProposalContent";
@@ -26,11 +28,11 @@
     </div>
     <div class="main-content">
         <div class="container">
-            <form asp-action="Create" asp-controller="Create" method="post" enctype="multipart/form-data">
+            <form asp-action="Index" asp-controller="Proposal" method="post" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
-                @Html.HiddenFor(m => m.BasicInfo.Id)
+                @Html.HiddenFor(m => m.BasicInfo.ProposalId)
                 @Html.HiddenFor(m => m.BasicInfo.UserId)
-                <div class="form-card">
+                <div class="navigation-card">
                     <div class="d-flex flex-column gap-3 w-100">
                         <div class="d-flex gap-2 justify-content-end w-100">
                             <button type="button" class="btn btn-action btn-secondary" onclick="window.location.href='/proposal/Menu'">
@@ -51,10 +53,10 @@
                         </div>
                         <div class="d-flex justify-content-start w-100">
                             <div class="nav-tabs-wrapper d-flex align-items-center">
-                                <button type="button" id="btnBase" class="nav-tab active" onclick="showDiv('base')">
+                                <button type="button" id="btnBase" class="nav-tab active">
                                     <i class="fas fa-info-circle me-2"></i>基本情報
                                 </button>
-                                <button type="button" id="btnTeian" class="nav-tab" onclick="showDiv('teian')">
+                                <button type="button" id="btnTeian" class="nav-tab">
                                     <i class="fas fa-lightbulb me-2"></i>提案内容
                                 </button>
                             </div>
@@ -62,9 +64,9 @@
                     </div>
                 </div>
                 <!-- 基本情報フォーム -->
-                @await Html.PartialAsync("~/Views/Create/_BasicInfo.cshtml", basicInfo, basicInfoViewData)
+                @await Html.PartialAsync("~/Views/Proposal/_BasicInfo.cshtml", basicInfo, basicInfoViewData)
                 <!-- 提案内容フォーム -->
-                @await Html.PartialAsync("~/Views/Create/_ProposalContent.cshtml", proposalContent, proposalContentViewData)
+                @await Html.PartialAsync("~/Views/Proposal/_ProposalContent.cshtml", proposalContent, proposalContentViewData)
             </form>
         </div>
     </div>

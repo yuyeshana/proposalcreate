@@ -27,7 +27,7 @@
             <div class="form-row-modern">
                 <div class="form-group-modern">
                     <label class="form-label-modern">効果の種類 <span class="required-badge">必須</span></label>
-                    @Html.DropDownListFor(m => m.KoukaJishi, (ViewBag.Dropdowns as Proposal.BL.DropdownsViewModel)?.KoukaJishiList ?? new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(), new { @class = "form-control-modern" })
+                    @Html.DropDownListFor(m => m.KoukaJishi, (ViewBag.Dropdowns as Proposal.BL.ProposalBL.DropdownsViewModel)?.KoukaJishiList ?? new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>(), new { @class = "form-control-modern" })
                     @Html.ValidationMessageFor(m => m.KoukaJishi, "", new { @class = "validation-message" })
                 </div>
             </div>

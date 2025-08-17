@@ -5,27 +5,38 @@ using System.Text;
 
 namespace Proposal.BL
 {
+    /// <summary>
+    /// ログイン処理を行うビジネスロジッククラス
+    /// </summary>
     public class LoginBL
     {
+        /// <summary>
+        /// データアクセスクラス
+        /// </summary>
         private readonly LoginDAC _LoginDAC;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="connectionString">データベース接続文字列</param>
         public LoginBL(string connectionString)
         {
             _LoginDAC = new LoginDAC(connectionString);
         }
 
         /// <summary>
-        /// 验证用户账号密码
+        /// ユーザーアカウントとパスワードの認証を行います
         /// </summary>
-        /// <returns>登录成功返回用户对象，否则返回 null</returns>
+        /// <param name="pModel">ログインモデル</param>
+        /// <returns>ログイン成功時はユーザーオブジェクト、失敗時はnullを返します</returns>
         public User ValidateUser(LoginModel pModel)
         {
             var user = _LoginDAC.GetUserById(pModel);
             if (user != null)
             {
-                // 把输入的密码做哈希
+                // 入力されたパスワードをハッシュ化
                 string hashedInputPassword = HashPasswordSHA256(pModel.Password);
-                // 和数据库存的哈希密码比对
+                // データベースに保存されているハッシュ化パスワードと比較
                 if (user.Password == hashedInputPassword)
                 {
                     return user;
@@ -34,6 +45,11 @@ namespace Proposal.BL
             return null;
         }
 
+        /// <summary>
+        /// SHA256アルゴリズムを使用してパスワードをハッシュ化します
+        /// </summary>
+        /// <param name="password">ハッシュ化対象のパスワード</param>
+        /// <returns>Base64エンコードされたハッシュ値</returns>
         public string HashPasswordSHA256(string password)
         {
             using var sha256 = SHA256.Create();

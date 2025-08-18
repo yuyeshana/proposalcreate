@@ -50,12 +50,28 @@
   min-height: calc(100vh - 120px);
 }
 </style>
+@{
+        var loginId = Context.Session.GetString("UserId");
+}
 <body>  
     <header class="modern-header">  
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm modern-navbar">
             <div class="container-fluid">  
                 <a class="modern-navbar-brand" asp-area="" asp-controller="Menu" asp-action="Menu">提案書作成提出システム</a>
             </div>  
+            <div class="container-fluid d-flex ms-auto flex-column align-items-end gap-1">
+
+                @if (!string.IsNullOrEmpty(loginId))
+                {
+                    <span class="navbar-text mb-0 text-nowrap text-white">ログインID：@loginId</span>
+
+                    <form asp-controller="Login" asp-action="Logout" method="post" class="m-0 text-nowrap">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-light btn-sm">ログアウト</button>
+                    </form>
+                }
+            </div>
+
         </nav>  
     </header>  
     

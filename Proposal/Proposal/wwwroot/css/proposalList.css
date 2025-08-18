@@ -61,8 +61,8 @@
 /* 列幅設定 */
 .table-modern th:nth-child(1),
 .table-modern td:nth-child(1) {
-    width: 6%;
-    min-width: 60px;
+    width: 7%;
+    min-width: 70px;
 }
 
 .table-modern th:nth-child(2),
@@ -126,9 +126,10 @@
     vertical-align: middle;
     text-align: center;
     font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    word-break: break-word;
 }
 
 /* バッジ */

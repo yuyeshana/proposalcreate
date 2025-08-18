@@ -77,5 +77,15 @@ namespace Proposal.Controllers
             }
             return RedirectToAction("Index", "proposalList");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("Logout")]
+        public IActionResult Logout_Post()
+        {
+            HttpContext.Session.Clear();
+            Response.Cookies.Delete(".AspNetCore.Session");
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

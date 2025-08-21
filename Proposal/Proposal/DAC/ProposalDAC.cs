@@ -265,6 +265,7 @@ namespace Proposal.DAC
                     p.kaizenan,
                     p.koukaJishi,
                     p.kouka,
+                    p.review_guidance,
                     p.created_time,
                     p.updated_time
                 FROM 

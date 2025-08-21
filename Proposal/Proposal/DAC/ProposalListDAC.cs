@@ -39,7 +39,9 @@ namespace Proposal.DAC
             string sql = $@"
             SELECT COUNT(*)
             FROM ProposalsDB.dbo.proposal p
-            LEFT JOIN ProposalsDB.dbo.[user] u ON p.user_id = u.user_id
+            LEFT JOIN ProposalsDB.dbo.[user] u ON (p.user_id = u.user_id 
+                OR (u.shozoku_id = p.first_reviewer_affiliation_id and u.department_id = p.first_reviewer_department_id and u.section_id = p.first_reviewer_section_id and u.subsection_id = p.first_reviewer_subsection_id)
+                OR (u.section_id = p.evaluation_section_id OR u.section_id = p.responsible_section_id1 OR u.section_id = p.responsible_section_id2 OR u.section_id = p.responsible_section_id3 OR u.section_id = p.responsible_section_id4 OR u.section_id = p.responsible_section_id5))
             LEFT JOIN ProposalsDB.dbo.[organizations] o ON u.shozoku_id = o.organizations_id
             LEFT JOIN ProposalsDB.dbo.[proposal_status] s ON p.status = s.status_id
             WHERE u.user_id = @UserId {filterSql};
@@ -48,7 +50,9 @@ namespace Proposal.DAC
                     o.organizations_name,
                     s.status_name
                 FROM ProposalsDB.dbo.proposal p
-                LEFT JOIN ProposalsDB.dbo.[user] u ON p.user_id = u.user_id
+                LEFT JOIN ProposalsDB.dbo.[user] u ON (p.user_id = u.user_id 
+                    OR (u.shozoku_id = p.first_reviewer_affiliation_id and u.department_id = p.first_reviewer_department_id and u.section_id = p.first_reviewer_section_id and u.subsection_id = p.first_reviewer_subsection_id)
+                    OR (u.section_id = p.evaluation_section_id OR u.section_id = p.responsible_section_id1 OR u.section_id = p.responsible_section_id2 OR u.section_id = p.responsible_section_id3 OR u.section_id = p.responsible_section_id4 OR u.section_id = p.responsible_section_id5))
                 LEFT JOIN ProposalsDB.dbo.[organizations] o ON u.shozoku_id = o.organizations_id
                 LEFT JOIN ProposalsDB.dbo.[proposal_status] s ON p.status = s.status_id
                 WHERE u.user_id = @UserId {filterSql}
@@ -62,7 +66,7 @@ namespace Proposal.DAC
             if (!string.IsNullOrEmpty(year)) cmd.Parameters.AddWithValue("@Year", year);
             if (status.HasValue) cmd.Parameters.AddWithValue("@Status", status.Value);
             if (dateFrom.HasValue) cmd.Parameters.AddWithValue("@DateFrom", dateFrom.Value);
-            if (dateTo.HasValue) cmd.Parameters.AddWithValue("@DateTo", dateTo.Value);
+            if (dateTo.HasValue) cmd.Parameters.AddWithValue("@DateTo", dateTo.Value.Date.AddDays(1).AddTicks(-1));
             cmd.Parameters.AddWithValue("@Offset", (page - 1) * pageSize);
             cmd.Parameters.AddWithValue("@PageSize", pageSize);
 

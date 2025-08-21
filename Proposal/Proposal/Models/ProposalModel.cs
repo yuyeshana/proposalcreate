@@ -6,6 +6,18 @@ using System.Reflection;
 namespace Proposal.Models
 {
     /// <summary>
+    /// 提提案書画面のモードを表す列挙型
+    /// </summary>
+    public enum ProposalMode
+    {
+        Create,
+        FirstReview,
+        SecondReview,
+        Approved,
+        Rejected
+    }
+
+    /// <summary>
     /// 所属情報を表すモデル
     /// </summary>
     public class Affiliation
@@ -321,13 +333,13 @@ namespace Proposal.Models
         /// <summary>
         /// 主務課ID
         /// </summary>
-        [Required(ErrorMessage = "主務課を選択してください。")]
+        //[Required(ErrorMessage = "主務課を選択してください。")]
         public string EvaluationSectionId { get; set; } = string.Empty;
 
         /// <summary>
         /// 関係課1のID
         /// </summary>
-        [Required(ErrorMessage = "関係課を1つ以上選択してください。")]
+        //[Required(ErrorMessage = "関係課を1つ以上選択してください。")]
         public string ResponsibleSectionId1 { get; set; } = string.Empty;
 
         /// <summary>

@@ -3,12 +3,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Tabボタンとコンテンツエリアを取得
     const btnBase = document.getElementById('btnBase');
     const btnTeian = document.getElementById('btnTeian');
-    const btnFirstReview = document.getElementById('btnFirstReview');
+    const baseDiv = document.getElementById('baseDiv');
+    const teianDiv = document.getElementById('teianDiv');
 
     // Tabボタンにクリックイベントを追加
     btnBase.addEventListener('click', () => showDiv('base'));
     btnTeian.addEventListener('click', () => showDiv('teian'));
-    btnFirstReview.addEventListener('click', () => showDiv('firstReview'));
 
     // 初期表示で基本情報Tabを表示
     showDiv('base');
@@ -26,20 +26,16 @@ document.addEventListener('DOMContentLoaded', function() {
 function showDiv(divName) {
     const btnBase = document.getElementById('btnBase');
     const btnTeian = document.getElementById('btnTeian');
-    const btnFirstReview = document.getElementById('btnFirstReview');
     const baseDiv = document.getElementById('baseDiv');
     const teianDiv = document.getElementById('teianDiv');
-    const firstReviewDiv = document.getElementById('firstReviewDiv');
 
     // すべてのTabボタンからactiveクラスを削除
     btnBase.classList.remove('active');
     btnTeian.classList.remove('active');
-    btnFirstReview.classList.remove('active');
 
     // すべてのコンテンツエリアを非表示
     baseDiv.style.display = 'none';
     teianDiv.style.display = 'none';
-    firstReviewDiv.style.display = 'none';
 
     // div名に応じて対応するコンテンツを表示し、対応するボタンをアクティブ化
     if (divName === 'base') {
@@ -48,9 +44,6 @@ function showDiv(divName) {
     } else if (divName === 'teian') {
         teianDiv.style.display = 'block';
         btnTeian.classList.add('active');
-    } else if (divName === 'firstReview') {
-        firstReviewDiv.style.display = 'block';
-        btnFirstReview.classList.add('active');
     }
 }
 

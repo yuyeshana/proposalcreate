@@ -20,7 +20,6 @@ namespace Proposal.Controllers
     {
         // フィールド
         private readonly ProposalBL _createBL;
-        private readonly FirstReviewBL _firstReviewBL;
         private readonly IConfiguration _configuration;
         private readonly ProposalValidator _proposalValidator;
 
@@ -36,7 +35,6 @@ namespace Proposal.Controllers
             _proposalValidator = proposalValidator;
             var connectionString = _configuration.GetConnectionString("ProposalDB");
             _createBL = new ProposalBL(connectionString);
-            _firstReviewBL = new FirstReviewBL(connectionString);
         }
 
         /// <summary>
@@ -65,8 +63,6 @@ namespace Proposal.Controllers
             viewModel.BasicInfo.UserId = userId;
             viewModel.ProposalContent.ProposalId = proposalid;
             viewModel.ProposalContent.UserId = userId;
-            viewModel.FirstReviewContent.ProposalId = proposalid;
-            viewModel.FirstReviewContent.UserId = userId;
 
 
             // 編集・確認の場合
@@ -74,7 +70,7 @@ namespace Proposal.Controllers
             {
                 // 提案書の詳細情報を取得
                 _createBL.GetProposalDetailById(viewModel.BasicInfo, viewModel.ProposalContent);
-                _firstReviewBL.GetFirstReviewContentById(viewModel.FirstReviewContent);
+
             }
             // 新規作成の場合
             else
@@ -84,8 +80,6 @@ namespace Proposal.Controllers
                 // 提案者情報を取得
                  _createBL.GetUserInfoByUserId(viewModel.BasicInfo);
             }
-            // statusからタブ判定
-            viewModel.SetModeFromStatus();
 
             return View("Proposal", viewModel);
         }
@@ -165,34 +159,20 @@ namespace Proposal.Controllers
             // ビューモデルから提案内容モデルを作成
             var proposalContentModel = CreateProposalContentModelFromViewModel(viewModel);
 
-            // ビューモデルから提案内容モデルを作成
-            var firstReviewContentModel = CreateFirstReviewContentModelFromViewModel(viewModel);
-
             // アクションに応じた処理を実行
             switch (action)
             {
                 case "Menu":
                     return View("~/Views/Menu/Menu.cshtml");
 
-                case "CreateIchijihozon":
+                case "Ichijihozon":
                     return HandleTemporarySave(basicInfoModel, proposalContentModel, viewModel);
 
-                case "CreateDeryoku":
-                    return HandleCreateExport(basicInfoModel, proposalContentModel, viewModel);
+                case "Deryoku":
+                    return HandleExport(basicInfoModel, proposalContentModel, viewModel);
 
-                case "CreateSubmit":
-                    return HandleCreateSubmit(basicInfoModel, proposalContentModel, viewModel);
-                case "FirstReviewIchijihozon":
-                    return HandleFirstReviewTemporarySave(basicInfoModel, proposalContentModel, firstReviewContentModel, viewModel);
-
-                case "FirstReviewDeryoku":
-                    return HandleFirstReviewExport(basicInfoModel, proposalContentModel, firstReviewContentModel, viewModel);
-
-                case "FirstReviewReturn":
-                    return HandleFirstReviewReturn(basicInfoModel, proposalContentModel, firstReviewContentModel, viewModel);
-
-                case "FirstReviewSubmit":
-                    return HandleFirstReviewSubmit(basicInfoModel, proposalContentModel, firstReviewContentModel, viewModel);
+                case "Submit":
+                    return HandleSubmit(basicInfoModel, proposalContentModel, viewModel);
 
                 default:
                     // バリデーションエラー時の処理
@@ -279,21 +259,6 @@ namespace Proposal.Controllers
         }
 
         /// <summary>
-        /// ビューモデルから提案内容モデルを作成します
-        /// </summary>
-        /// <param name="viewModel">ビューモデル</param>
-        /// <returns>提案内容モデル</returns>
-        private FirstReviewContentModel CreateFirstReviewContentModelFromViewModel(ProposalViewModel viewModel)
-        {
-            return new FirstReviewContentModel
-            {
-                ProposalId = viewModel.FirstReviewContent.ProposalId,
-                UserId = viewModel.FirstReviewContent.UserId,
-                ReviewGuidance = viewModel.FirstReviewContent.ReviewGuidance
-            };
-        }
-
-        /// <summary>
         /// 一時保存処理を実行します
         /// </summary>
         /// <param name="basicInfoModel">基本情報モデル</param>
@@ -330,7 +295,7 @@ namespace Proposal.Controllers
         /// <param name="proposalContentModel">提案内容モデル</param>
         /// <param name="viewModel">ビューモデル</param>
         /// <returns>CSVファイル</returns>
-        private IActionResult HandleCreateExport(ProposalModel basicInfoModel, ProposalContentModel proposalContentModel, ProposalViewModel viewModel)
+        private IActionResult HandleExport(ProposalModel basicInfoModel, ProposalContentModel proposalContentModel, ProposalViewModel viewModel)
         {
             // バリデーション実行
             if (!ValidateModel(basicInfoModel) || !ValidateProposalContent(proposalContentModel))
@@ -373,7 +338,7 @@ namespace Proposal.Controllers
         /// <param name="proposalContentModel">提案内容モデル</param>
         /// <param name="viewModel">ビューモデル</param>
         /// <returns>処理結果</returns>
-        private IActionResult HandleCreateSubmit(ProposalModel basicInfoModel, ProposalContentModel proposalContentModel, ProposalViewModel viewModel)
+        private IActionResult HandleSubmit(ProposalModel basicInfoModel, ProposalContentModel proposalContentModel, ProposalViewModel viewModel)
         {
             // バリデーション実行
             if (!ValidateModel(basicInfoModel) || !ValidateProposalContent(proposalContentModel))
@@ -392,133 +357,6 @@ namespace Proposal.Controllers
 
             // データベースに登録または更新
             InsertOrUpdate(basicInfoModel, proposalContentModel);
-
-            return RedirectToAction("Index", "ProposalList");
-        }
-
-        /// <summary>
-        /// 第一次審査一時保存処理を実行します
-        /// </summary>
-        /// <param name="basicInfoModel">基本情報モデル</param>
-        /// <param name="proposalContentModel">提案内容モデル</param>
-        /// <param name="firstReviewContentModel">第一次審査内容モデル</param>
-        /// <param name="viewModel">ビューモデル</param>
-        /// <returns>処理結果</returns>
-        private IActionResult HandleFirstReviewTemporarySave(ProposalModel basicInfoModel, ProposalContentModel proposalContentModel, FirstReviewContentModel firstReviewContentModel, ProposalViewModel viewModel)
-        {
-            // バリデーション実行
-            if (!ValidateFirstReviewContent(firstReviewContentModel))
-            {
-                SetDropdowns();
-                SetShowProposalContentFlagForModelStateError();
-                //PreserveUserInputData(viewModel, basicInfoModel, proposalContentModel, firstReviewContentModel);
-                viewModel.PreserveUserInputData(basicInfoModel, proposalContentModel, firstReviewContentModel);
-                return View("~/Views/Proposal/Proposal.cshtml", viewModel);
-            }
-            // 提案状態を作成中に設定
-            firstReviewContentModel.Status = 2;
-
-            // データベースに登録または更新
-            _firstReviewBL.UpdateFirstReviewContent(firstReviewContentModel);
-
-            return RedirectToAction("Index", "ProposalList");
-        }
-
-        /// <summary>
-        /// 第一次審査CSV出力処理を実行します
-        /// </summary>
-        /// <param name="basicInfoModel">基本情報モデル</param>
-        /// <param name="proposalContentModel">提案内容モデル</param>
-        /// <param name="viewModel">ビューモデル</param>
-        /// <returns>CSVファイル</returns>
-        private IActionResult HandleFirstReviewExport(ProposalModel basicInfoModel, ProposalContentModel proposalContentModel, FirstReviewContentModel firstReviewContentModel, ProposalViewModel viewModel)
-        {
-            // バリデーション実行
-            if (!ValidateFirstReviewContent(firstReviewContentModel))
-            {
-                SetDropdowns();
-                SetShowProposalContentFlagForModelStateError();
-                PreserveUserInputData(viewModel, basicInfoModel, proposalContentModel);
-                return View("~/Views/Proposal/Proposal.cshtml", viewModel);
-            }
-
-            // ドロップダウンリストから表示名を取得
-            var dropdowns = (Proposal.BL.ProposalBL.DropdownsViewModel)ViewBag.Dropdowns;
-            string proposalTypeName = dropdowns.ProposalTypes.FirstOrDefault(x => x.Value == basicInfoModel.ProposalTypeId)?.Text ?? "";
-            string firstReviewerAffiliation = dropdowns.Affiliations.FirstOrDefault(x => x.Value == basicInfoModel.FirstReviewerAffiliationId)?.Text ?? "";
-            string firstReviewerDepartment = dropdowns.Departments.FirstOrDefault(x => x.Value == basicInfoModel.FirstReviewerDepartmentId)?.Text ?? "";
-            string firstReviewerSection = dropdowns.Sections.FirstOrDefault(x => x.Value == basicInfoModel.FirstReviewerSectionId)?.Text ?? "";
-
-            // CSVデータを作成
-            var csv = new StringBuilder();
-            csv.AppendLine("提案年度,提案題名,提案の種類,提案の区分,氏名又は代表名,グループ名,第一次審査者所属,第一次審査者部・署,第一次審査者課・部門,第一次審査者氏名,第一次審査者官職,主務課,関係課,現状・問題点,改善案,効果の種類,効果,審査指導・回答");
-
-            // 効果の種類の表示名を取得
-            string koukaJishiText = proposalContentModel.KoukaJishi.HasValue
-                ? (proposalContentModel.KoukaJishi.Value.GetType().GetField(proposalContentModel.KoukaJishi.Value.ToString())
-                    .GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()?.Description ?? proposalContentModel.KoukaJishi.Value.ToString())
-                : "";
-
-            csv.AppendLine($"\"{basicInfoModel.TeianYear}\",\"{basicInfoModel.TeianDaimei}\",\"{proposalTypeName}\",\"{basicInfoModel.ProposalKbnId}\",\"{basicInfoModel.ShimeiOrDaihyoumei}\",\"{basicInfoModel.GroupMei}\",\"{firstReviewerAffiliation}\",\"{firstReviewerDepartment}\",\"{firstReviewerSection}\",\"{basicInfoModel.FirstReviewerName}\",\"{basicInfoModel.FirstReviewerTitle}\",\"{basicInfoModel.EvaluationSectionId}\",\"{basicInfoModel.ResponsibleSectionId1}\",\"{proposalContentModel.GenjyoMondaiten}\",\"{proposalContentModel.Kaizenan}\",\"{koukaJishiText}\",\"{proposalContentModel.Kouka}\",\"{firstReviewContentModel.ReviewGuidance}\"");
-
-            // CSVファイルを返却
-            var bytes = Encoding.UTF8.GetBytes(csv.ToString());
-            var filename = $"提案内容_{DateTime.Now:yyyyMMddHHmmss}.csv";
-            return File(bytes, "text/csv", filename);
-        }
-
-        /// <summary>
-        /// 第一次審査提出処理を実行します
-        /// </summary>
-        /// <param name="basicInfoModel">基本情報モデル</param>
-        /// <param name="proposalContentModel">提案内容モデル</param>
-        /// <param name="firstReviewContentModel">第一次審査内容モデル</param>
-        /// <param name="viewModel">ビューモデル</param>
-        /// <returns>処理結果</returns>
-        private IActionResult HandleFirstReviewReturn(ProposalModel basicInfoModel, ProposalContentModel proposalContentModel, FirstReviewContentModel firstReviewContentModel, ProposalViewModel viewModel)
-        {
-            // バリデーション実行
-            if (!ValidateFirstReviewContent(firstReviewContentModel))
-            {
-                SetDropdowns();
-                SetShowProposalContentFlagForModelStateError();
-                PreserveUserInputData(viewModel, basicInfoModel, proposalContentModel, firstReviewContentModel);
-                return View("~/Views/Proposal/Proposal.cshtml", viewModel);
-            }
-
-            // 提案状態を作成中に設定
-            firstReviewContentModel.Status = 9;
-
-            // データベースに登録または更新
-            _firstReviewBL.UpdateFirstReviewContent(firstReviewContentModel);
-
-            return RedirectToAction("Index", "ProposalList");
-        }
-
-        /// <summary>
-        /// 第一次審査提出処理を実行します
-        /// </summary>
-        /// <param name="basicInfoModel">基本情報モデル</param>
-        /// <param name="proposalContentModel">提案内容モデル</param>
-        /// <param name="firstReviewContentModel">第一次審査内容モデル</param>
-        /// <param name="viewModel">ビューモデル</param>
-        /// <returns>処理結果</returns>
-        private IActionResult HandleFirstReviewSubmit(ProposalModel basicInfoModel, ProposalContentModel proposalContentModel, FirstReviewContentModel firstReviewContentModel, ProposalViewModel viewModel)
-        {
-            // バリデーション実行
-            if (!ValidateFirstReviewContent(firstReviewContentModel))
-            {
-                SetDropdowns();
-                SetShowProposalContentFlagForModelStateError();
-                PreserveUserInputData(viewModel, basicInfoModel, proposalContentModel, firstReviewContentModel);
-                return View("~/Views/Proposal/Proposal.cshtml", viewModel);
-            }
-
-            // 提案状態を作成中に設定
-            firstReviewContentModel.Status = 12;
-
-            // データベースに登録または更新
-            _firstReviewBL.UpdateFirstReviewContent(firstReviewContentModel);
 
             return RedirectToAction("Index", "ProposalList");
         }
@@ -566,7 +404,7 @@ namespace Proposal.Controllers
         /// <param name="viewModel">ビューモデル</param>
         /// <param name="basicInfoModel">基本情報モデル</param>
         /// <param name="proposalContentModel">提案内容モデル</param>
-        private void PreserveUserInputData(ProposalViewModel viewModel, ProposalModel basicInfoModel, ProposalContentModel proposalContentModel, FirstReviewContentModel? firstReviewContentModel = null)
+        private void PreserveUserInputData(ProposalViewModel viewModel, ProposalModel basicInfoModel, ProposalContentModel proposalContentModel)
         {
             // ビューモデルのnullチェックと初期化
             if (viewModel == null)
@@ -592,11 +430,6 @@ namespace Proposal.Controllers
             while (viewModel.BasicInfo.GroupMembers.Count < 10)
             {
                 viewModel.BasicInfo.GroupMembers.Add(new GroupMemberModel());
-            }
-
-            if (viewModel.FirstReviewContent == null)
-            {
-                viewModel.FirstReviewContent = new FirstReviewContentModel();
             }
 
             // 基本情報をビューモデルに再設定
@@ -656,11 +489,6 @@ namespace Proposal.Controllers
             viewModel.ProposalContent.TenpuFileName3 = proposalContentModel?.TenpuFileName3;
             viewModel.ProposalContent.TenpuFileName4 = proposalContentModel?.TenpuFileName4;
             viewModel.ProposalContent.TenpuFileName5 = proposalContentModel?.TenpuFileName5;
-
-            // 第一次審査内容をビューモデルに再設定
-            viewModel.FirstReviewContent.ProposalId = firstReviewContentModel?.ProposalId;
-            viewModel.FirstReviewContent.UserId = firstReviewContentModel?.UserId;
-            viewModel.FirstReviewContent.ReviewGuidance = firstReviewContentModel?.ReviewGuidance;
         }
 
         /// <summary>
@@ -756,35 +584,6 @@ namespace Proposal.Controllers
             var validationResults = new List<ValidationResult>();
             var validationContext = new ValidationContext(proposalContentModel);
             Validator.TryValidateObject(proposalContentModel, validationContext, validationResults, true);
-
-            // バリデーション結果をModelStateに追加
-            foreach (var validationResult in validationResults)
-            {
-                foreach (var memberName in validationResult.MemberNames)
-                {
-                    ModelState.AddModelError(memberName, validationResult.ErrorMessage);
-                }
-            }
-
-            return ModelState.IsValid;
-        }
-
-        /// <summary>
-        /// 第一次審査モデル内容の検証を実行します
-        /// </summary>
-        /// <param name="firstReviewContentModel">検証対象の第一次審査内容モデル</param>
-        /// <returns>検証が成功した場合はtrue、失敗した場合はfalse</returns>
-        private bool ValidateFirstReviewContent(FirstReviewContentModel firstReviewContentModel)
-        {
-            if (firstReviewContentModel == null)
-            {
-                return false;
-            }
-
-            // カスタムバリデーションを実行
-            var validationResults = new List<ValidationResult>();
-            var validationContext = new ValidationContext(firstReviewContentModel);
-            Validator.TryValidateObject(firstReviewContentModel, validationContext, validationResults, true);
 
             // バリデーション結果をModelStateに追加
             foreach (var validationResult in validationResults)

@@ -13,6 +13,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初期表示で基本情報Tabを表示
     showDiv('base');
 
+    // 画面初期表示時にViewBagの値に基づいて画面を切り替え
+    var flagElem = document.getElementById('showProposalContentFlag');
+    var showProposalContent = flagElem && flagElem.textContent.trim() === 'true';
+    if (showProposalContent) {
+        showDiv('teian');
+    } else {
+        showDiv('base');
+    }
+
     // 提案の区分の変更を監視
     const teianKbnSelect = document.getElementById('teianKbn');
     if (teianKbnSelect) {

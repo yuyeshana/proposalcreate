@@ -116,7 +116,7 @@ namespace Proposal.Models
         /// 選択してください
         /// </summary>
         [Description("選択してください")]
-        Select = 0,
+        None = -1,
 
         /// <summary>
         /// 実施済
@@ -128,7 +128,7 @@ namespace Proposal.Models
         /// 未実施（予想効果）
         /// </summary>
         [Description("未実施（予想効果）")]
-        MiJisshiYosoKouka = 2
+        MiJisshiYosoKouka = 0
     }
 
     /// <summary>
@@ -333,13 +333,13 @@ namespace Proposal.Models
         /// <summary>
         /// 主務課ID
         /// </summary>
-        //[Required(ErrorMessage = "主務課を選択してください。")]
+        [Required(ErrorMessage = "主務課を選択してください。")]
         public string EvaluationSectionId { get; set; } = string.Empty;
 
         /// <summary>
         /// 関係課1のID
         /// </summary>
-        //[Required(ErrorMessage = "関係課を1つ以上選択してください。")]
+        [Required(ErrorMessage = "関係課を1つ以上選択してください。")]
         public string ResponsibleSectionId1 { get; set; } = string.Empty;
 
         /// <summary>

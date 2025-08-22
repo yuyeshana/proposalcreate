@@ -17,6 +17,7 @@ namespace Proposal.Models
         public string Kaizenan { get; set; }
 
         [Required(ErrorMessage = "効果の種類を選択してください")]
+        [Range(0, 1, ErrorMessage = "効果の種類を選択してください")]
         public KoukaJishi? KoukaJishi { get; set; }
 
         [Required(ErrorMessage = "効果は必須です")]
@@ -34,5 +35,11 @@ namespace Proposal.Models
         public string? TenpuFileName3 { get; set; }
         public string? TenpuFileName4 { get; set; }
         public string? TenpuFileName5 { get; set; }
+
+        public string? TenpuFilePath1 { get; set; }
+        public string? TenpuFilePath2 { get; set; }
+        public string? TenpuFilePath3 { get; set; }
+        public string? TenpuFilePath4 { get; set; }
+        public string? TenpuFilePath5 { get; set; }
     }
 } 

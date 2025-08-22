@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
@@ -82,7 +83,10 @@ namespace Proposal.Controllers
                 viewModel.BasicInfo.TeianYear = DateTime.Now.ToString("ggy年", new CultureInfo("ja-JP") { DateTimeFormat = { Calendar = new JapaneseCalendar() } });
 
                 // 提案者情報を取得
-                 _createBL.GetUserInfoByUserId(viewModel.BasicInfo);
+                _createBL.GetUserInfoByUserId(viewModel.BasicInfo);
+                //暫定主務課と関係課値設定※※※※※※※※※※※※※※※※
+                viewModel.BasicInfo.EvaluationSectionId = "K02";
+                viewModel.BasicInfo.ResponsibleSectionId1 = "K02";
             }
             // statusからタブ判定
             viewModel.SetModeFromStatus();
@@ -159,46 +163,38 @@ namespace Proposal.Controllers
         [HttpPost]
         public IActionResult Index(ProposalViewModel viewModel, string action)
         {
-            // ビューモデルから基本情報モデルを作成
-            var basicInfoModel = CreateBasicInfoModelFromViewModel(viewModel);
-
-            // ビューモデルから提案内容モデルを作成
-            var proposalContentModel = CreateProposalContentModelFromViewModel(viewModel);
-
-            // ビューモデルから提案内容モデルを作成
-            var firstReviewContentModel = CreateFirstReviewContentModelFromViewModel(viewModel);
-
             // アクションに応じた処理を実行
             switch (action)
             {
                 case "Menu":
                     return View("~/Views/Menu/Menu.cshtml");
 
-                case "CreateIchijihozon":
-                    return HandleTemporarySave(basicInfoModel, proposalContentModel, viewModel);
+                case "CreateTemporarySave":
+                    return HandleTemporarySave(viewModel);
 
-                case "CreateDeryoku":
-                    return HandleCreateExport(basicInfoModel, proposalContentModel, viewModel);
+                case "CreateExport":
+                    //return HandleCreateExport(basicInfoModel, proposalContentModel, viewModel);
 
                 case "CreateSubmit":
-                    return HandleCreateSubmit(basicInfoModel, proposalContentModel, viewModel);
-                case "FirstReviewIchijihozon":
-                    return HandleFirstReviewTemporarySave(basicInfoModel, proposalContentModel, firstReviewContentModel, viewModel);
+                    //return HandleCreateSubmit(basicInfoModel, proposalContentModel, viewModel);
 
-                case "FirstReviewDeryoku":
-                    return HandleFirstReviewExport(basicInfoModel, proposalContentModel, firstReviewContentModel, viewModel);
+                case "FirstReviewTemporarySave":
+                    //return HandleFirstReviewTemporarySave(basicInfoModel, proposalContentModel, firstReviewContentModel, viewModel);
+
+                case "FirstReviewExport":
+                    //return HandleFirstReviewExport(basicInfoModel, proposalContentModel, firstReviewContentModel, viewModel);
 
                 case "FirstReviewReturn":
-                    return HandleFirstReviewReturn(basicInfoModel, proposalContentModel, firstReviewContentModel, viewModel);
+                    //return HandleFirstReviewReturn(basicInfoModel, proposalContentModel, firstReviewContentModel, viewModel);
 
                 case "FirstReviewSubmit":
-                    return HandleFirstReviewSubmit(basicInfoModel, proposalContentModel, firstReviewContentModel, viewModel);
+                    //return HandleFirstReviewSubmit(basicInfoModel, proposalContentModel, firstReviewContentModel, viewModel);
 
                 default:
                     // バリデーションエラー時の処理
                     if (!ModelState.IsValid)
                     {
-                        return HandleValidationError(basicInfoModel, proposalContentModel, viewModel);
+                        //return HandleValidationError(basicInfoModel, proposalContentModel, viewModel);
                     }
                     return View("~/Views/Proposal/Proposal.cshtml", viewModel);
             }
@@ -300,25 +296,27 @@ namespace Proposal.Controllers
         /// <param name="proposalContentModel">提案内容モデル</param>
         /// <param name="viewModel">ビューモデル</param>
         /// <returns>処理結果</returns>
-        private IActionResult HandleTemporarySave(ProposalModel basicInfoModel, ProposalContentModel proposalContentModel, ProposalViewModel viewModel)
+        private IActionResult HandleTemporarySave(ProposalViewModel viewModel)
         {
             // バリデーション実行
-            if (!ValidateModel(basicInfoModel) || !ValidateProposalContent(proposalContentModel))
+            ModelState.Clear();
+            var ok1 = TryValidateModel(viewModel.BasicInfo, nameof(ProposalViewModel.BasicInfo));
+            var ok2 = TryValidateModel(viewModel.ProposalContent, nameof(ProposalViewModel.ProposalContent));
+            if (!(ok1 && ok2))
             {
                 SetDropdowns();
                 SetShowProposalContentFlagForModelStateError();
-                PreserveUserInputData(viewModel, basicInfoModel, proposalContentModel);
                 return View("~/Views/Proposal/Proposal.cshtml", viewModel);
             }
 
             // アップロードファイルを保存
-            SaveUploadedFiles(proposalContentModel);
+            SaveUploadedFiles(viewModel.ProposalContent);
 
             // 提案状態を作成中に設定
-            basicInfoModel.Status = 1;
+            viewModel.BasicInfo.Status = 1;
 
             // データベースに登録または更新
-            InsertOrUpdate(basicInfoModel, proposalContentModel);
+            InsertOrUpdate(viewModel.BasicInfo, viewModel.ProposalContent);
 
             return RedirectToAction("Index", "ProposalList");
         }
@@ -683,7 +681,7 @@ namespace Proposal.Controllers
                 if (uploadedFile != null && uploadedFile.Length > 0)
                 {
                     // アップロードディレクトリの作成
-                    var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Proposal/wwwroot/uploads");
+                    var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\uploads");
                     if (!Directory.Exists(uploadDirectory))
                     {
                         Directory.CreateDirectory(uploadDirectory);
@@ -703,6 +701,8 @@ namespace Proposal.Controllers
                     // ファイル名をモデルに設定
                     var fileNameProperty = proposalContentModel.GetType().GetProperty($"TenpuFileName{fileIndex}");
                     fileNameProperty?.SetValue(proposalContentModel, fileName);
+                    var filePathProperty = proposalContentModel.GetType().GetProperty($"TenpuFilePath{fileIndex}");
+                    filePathProperty?.SetValue(proposalContentModel, filePath);
                 }
             }
         }
@@ -845,13 +845,7 @@ namespace Proposal.Controllers
             if (string.IsNullOrEmpty(basicInfoModel.ProposalId))
             {
                 // 新規登録処理
-                basicInfoModel.ProposalId = _createBL.Insertproposals_detail(basicInfoModel, proposalContentModel).ToString();
-
-                // グループ提案の場合、グループ情報も登録
-                if (basicInfoModel.ProposalKbnId == "2")
-                {
-                    //_createBL.InsertGroupInfo(basicInfoModel);
-                }
+                _createBL.Insertproposals_detail(basicInfoModel, proposalContentModel);
             }
             else
             {

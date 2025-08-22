@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Proposal.Models;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using Proposal.Models;
-using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Reflection;
 
 
 namespace Proposal.DAC
@@ -29,19 +30,15 @@ namespace Proposal.DAC
             conn.Open();
             var cmd = new SqlCommand(@"INSERT INTO proposal (
                 user_id,
-                affiliation_id,
-                department_id,
-                section_id,
-                subsection_id,
                 proposal_name,
                 proposal_type,
+                proposal_kbn,
                 proposal_year,
                 status,
+                organizations_id,
                 name,
-                first_reviewer_affiliation_id,
-                first_reviewer_department_id,
-                first_reviewer_section_id,
-                first_reviewer_subsection_id,
+                submitted_date,
+                first_reviewer_organizations_id,
                 first_reviewer_name,
                 evaluation_section_id,
                 responsible_section_id1,
@@ -53,24 +50,30 @@ namespace Proposal.DAC
                 kaizenan,
                 koukaJishi,
                 kouka,
+                attachment_filename1,
+                attachment_filename2,
+                attachment_filename3,
+                attachment_filename4,
+                attachment_filename5,
+                attachment_filepath1,
+                attachment_filepath2,
+                attachment_filepath3,
+                attachment_filepath4,
+                attachment_filepath5,
                 created_time,
                 updated_time
             ) 
             SELECT 
                 @user_id,
-                u.shozoku_id,
-                u.department_id,
-                u.section_id,
-                u.subsection_id,
                 @proposal_name,
                 @proposal_type,
+                @proposal_kbn,
                 @proposal_year,
                 @status,
+                @organizations_id,
                 @name,
-                @first_reviewer_affiliation_id,
-                @first_reviewer_department_id,
-                @first_reviewer_section_id,
-                @first_reviewer_subsection_id,
+                @submitted_date,
+                @first_reviewer_organizations_id,
                 @first_reviewer_name,
                 @evaluation_section_id,
                 @responsible_section_id1,
@@ -82,6 +85,16 @@ namespace Proposal.DAC
                 @kaizenan,
                 @koukaJishi,
                 @kouka,
+                @attachment_filename1,
+                @attachment_filename2,
+                @attachment_filename3,
+                @attachment_filename4,
+                @attachment_filename5,
+                @attachment_filepath1,
+                @attachment_filepath2,
+                @attachment_filepath3,
+                @attachment_filepath4,
+                @attachment_filepath5,
                 SYSDATETIME(),
                 SYSDATETIME()
             FROM [user] u 
@@ -91,8 +104,10 @@ namespace Proposal.DAC
             cmd.Parameters.AddWithValue("@user_id", basicInfo.UserId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@proposal_name", basicInfo.TeianDaimei ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@proposal_type", basicInfo.ProposalTypeId ?? "");
+            cmd.Parameters.AddWithValue("@proposal_kbn", basicInfo.ProposalKbnId ?? "");
             cmd.Parameters.AddWithValue("@proposal_year", basicInfo.TeianYear ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@status", basicInfo.Status ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@organizations_id", basicInfo.SubsectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@name", basicInfo.ShimeiOrDaihyoumei ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@evaluation_section_id", basicInfo.EvaluationSectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id1", basicInfo.ResponsibleSectionId1 ?? (object)DBNull.Value);
@@ -100,22 +115,187 @@ namespace Proposal.DAC
             cmd.Parameters.AddWithValue("@responsible_section_id3", basicInfo.ResponsibleSectionId3 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id4", basicInfo.ResponsibleSectionId4 ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@responsible_section_id5", basicInfo.ResponsibleSectionId5 ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@first_reviewer_affiliation_id", basicInfo.FirstReviewerAffiliationId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@first_reviewer_department_id", basicInfo.FirstReviewerDepartmentId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@first_reviewer_section_id", basicInfo.FirstReviewerSectionId ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@first_reviewer_subsection_id", basicInfo.FirstReviewerSubsectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@first_reviewer_organizations_id", basicInfo.FirstReviewerSubsectionId ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@first_reviewer_name", basicInfo.FirstReviewerName ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@submitted_date", basicInfo.Submissiondate ?? (object)DBNull.Value);
 
             // 提案内容参数
             cmd.Parameters.AddWithValue("@genjyomondaiten", proposalContent.GenjyoMondaiten ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@kaizenan", proposalContent.Kaizenan ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@koukaJishi", (object)(proposalContent.KoukaJishi.HasValue ? (int)proposalContent.KoukaJishi.Value : DBNull.Value));
             cmd.Parameters.AddWithValue("@kouka", proposalContent.Kouka ?? (object)DBNull.Value);
-            // cmd.Parameters.AddWithValue("@attachmentfilename1", proposalContent.TenpuFileName1 ?? (object)DBNull.Value);
-            // cmd.Parameters.AddWithValue("@attachmentfilename2", proposalContent.TenpuFileName2 ?? (object)DBNull.Value);
-            // cmd.Parameters.AddWithValue("@attachmentfilename3", proposalContent.TenpuFileName3 ?? (object)DBNull.Value);
-            // cmd.Parameters.AddWithValue("@attachmentfilename4", proposalContent.TenpuFileName4 ?? (object)DBNull.Value);
-            // cmd.Parameters.AddWithValue("@attachmentfilename5", proposalContent.TenpuFileName5 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filename1", proposalContent.TenpuFileName1 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filename2", proposalContent.TenpuFileName2 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filename3", proposalContent.TenpuFileName3 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filename4", proposalContent.TenpuFileName4 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filename5", proposalContent.TenpuFileName5 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filepath1", proposalContent.TenpuFilePath1 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filepath2", proposalContent.TenpuFilePath2 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filepath3", proposalContent.TenpuFilePath3 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filepath4", proposalContent.TenpuFilePath4 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filepath5", proposalContent.TenpuFilePath5 ?? (object)DBNull.Value);
+
+            var result = cmd.ExecuteScalar();
+            return result != null ? Convert.ToInt32(result) : 0;
+        }
+
+        //提案書詳細登録
+        public int Insertproposals_detail_GroupInfo(ProposalModel basicInfo, ProposalContentModel proposalContent)
+        {
+            using var conn = new SqlConnection(_connectionString);
+            conn.Open();
+            var cmd = new SqlCommand(@"INSERT INTO proposal (
+                user_id,
+                proposal_name,
+                proposal_type,
+                proposal_kbn,
+                proposal_year,
+                status,
+                organizations_id,
+                group_name,
+                organizations_id_1,
+                name_1,
+                organizations_id_2,
+                name_2,
+                organizations_id_3,
+                name_3,
+                organizations_id_4,
+                name_4,
+                organizations_id_5,
+                name_5,
+                organizations_id_6,
+                name_6,
+                organizations_id_7,
+                name_7,
+                organizations_id_8,
+                name_8,
+                organizations_id_9,
+                name_9,
+                organizations_id_10,
+                name_10,
+                submitted_date,
+                first_reviewer_organizations_id,
+                first_reviewer_name,
+                evaluation_section_id,
+                responsible_section_id1,
+                responsible_section_id2,
+                responsible_section_id3,
+                responsible_section_id4,
+                responsible_section_id5,
+                genjyomondaiten,
+                kaizenan,
+                koukaJishi,
+                kouka,
+                attachment_filename1,
+                attachment_filename2,
+                attachment_filename3,
+                attachment_filename4,
+                attachment_filename5,
+                attachment_filepath1,
+                attachment_filepath2,
+                attachment_filepath3,
+                attachment_filepath4,
+                attachment_filepath5,
+                created_time,
+                updated_time
+            ) 
+            SELECT 
+                @user_id,
+                @proposal_name,
+                @proposal_type,
+                @proposal_kbn,
+                @proposal_year,
+                @status,
+                @organizations_id,
+                @group_name,
+                @organizations_id_1,
+                @name_1,
+                @organizations_id_2,
+                @name_2,
+                @organizations_id_3,
+                @name_3,
+                @organizations_id_4,
+                @name_4,
+                @organizations_id_5,
+                @name_5,
+                @organizations_id_6,
+                @name_6,
+                @organizations_id_7,
+                @name_7,
+                @organizations_id_8,
+                @name_8,
+                @organizations_id_9,
+                @name_9,
+                @organizations_id_10,
+                @name_10,
+                @submitted_date,
+                @first_reviewer_organizations_id,
+                @first_reviewer_name,
+                @evaluation_section_id,
+                @responsible_section_id1,
+                @responsible_section_id2,
+                @responsible_section_id3,
+                @responsible_section_id4,
+                @responsible_section_id5,
+                @genjyomondaiten,
+                @kaizenan,
+                @koukaJishi,
+                @kouka,
+                @attachment_filename1,
+                @attachment_filename2,
+                @attachment_filename3,
+                @attachment_filename4,
+                @attachment_filename5,
+                @attachment_filepath1,
+                @attachment_filepath2,
+                @attachment_filepath3,
+                @attachment_filepath4,
+                @attachment_filepath5,
+                SYSDATETIME(),
+                SYSDATETIME()
+            FROM [user] u 
+            WHERE u.user_id = @user_id; 
+            SELECT SCOPE_IDENTITY();", conn);
+            // 基本信息参数
+            cmd.Parameters.AddWithValue("@user_id", basicInfo.UserId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@proposal_name", basicInfo.TeianDaimei ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@proposal_type", basicInfo.ProposalTypeId ?? "");
+            cmd.Parameters.AddWithValue("@proposal_kbn", basicInfo.ProposalKbnId ?? "");
+            cmd.Parameters.AddWithValue("@proposal_year", basicInfo.TeianYear ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@status", basicInfo.Status ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@organizations_id", basicInfo.SubsectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@group_name", basicInfo.ShimeiOrDaihyoumei ?? (object)DBNull.Value);
+            for (int i = 0; i < 10; i++)
+            {
+                var m = (basicInfo.GroupMembers != null && i < basicInfo.GroupMembers.Count) ? basicInfo.GroupMembers[i] : null;
+                cmd.Parameters.AddWithValue($"@organizations_id_{i + 1}", m?.SubsectionId ?? "");
+                cmd.Parameters.AddWithValue($"@name_{i + 1}", m?.Name ?? "");
+            }
+            cmd.Parameters.AddWithValue("@evaluation_section_id", basicInfo.EvaluationSectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@responsible_section_id1", basicInfo.ResponsibleSectionId1 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@responsible_section_id2", basicInfo.ResponsibleSectionId2 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@responsible_section_id3", basicInfo.ResponsibleSectionId3 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@responsible_section_id4", basicInfo.ResponsibleSectionId4 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@responsible_section_id5", basicInfo.ResponsibleSectionId5 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@first_reviewer_organizations_id", basicInfo.FirstReviewerSubsectionId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@first_reviewer_name", basicInfo.FirstReviewerName ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@submitted_date", basicInfo.Submissiondate ?? (object)DBNull.Value);
+
+            // 提案内容参数
+            cmd.Parameters.AddWithValue("@genjyomondaiten", proposalContent.GenjyoMondaiten ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@kaizenan", proposalContent.Kaizenan ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@koukaJishi", (object)(proposalContent.KoukaJishi.HasValue ? (int)proposalContent.KoukaJishi.Value : DBNull.Value));
+            cmd.Parameters.AddWithValue("@kouka", proposalContent.Kouka ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filename1", proposalContent.TenpuFileName1 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filename2", proposalContent.TenpuFileName2 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filename3", proposalContent.TenpuFileName3 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filename4", proposalContent.TenpuFileName4 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filename5", proposalContent.TenpuFileName5 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filepath1", proposalContent.TenpuFilePath1 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filepath2", proposalContent.TenpuFilePath2 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filepath3", proposalContent.TenpuFilePath3 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filepath4", proposalContent.TenpuFilePath4 ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@attachment_filepath5", proposalContent.TenpuFilePath5 ?? (object)DBNull.Value);
 
             var result = cmd.ExecuteScalar();
             return result != null ? Convert.ToInt32(result) : 0;
@@ -250,10 +430,12 @@ namespace Proposal.DAC
                     p.organizations_id,
                     p.name,
                     p.group_name,
-                    p.first_reviewer_affiliation_id,
-                    p.first_reviewer_department_id,
-                    p.first_reviewer_section_id,
-                    p.first_reviewer_subsection_id,
+
+                    p.first_reviewer_organizations_id as first_reviewer_subsection_id ,
+                    B11.organizations_id as first_reviewer_section_id,
+                    C11.organizations_id as first_reviewer_department_id,
+                    D11.organizations_id as first_reviewer_affiliation_id,
+
                     p.first_reviewer_name,
                     p.evaluation_section_id,
                     p.responsible_section_id1,
@@ -314,6 +496,10 @@ namespace Proposal.DAC
                 LEFT JOIN organizations B10 ON B10.organizations_id = A10.organizations_parent_id
                 LEFT JOIN organizations C10 ON C10.organizations_id = B10.organizations_parent_id
                 LEFT JOIN organizations D10 ON D10.organizations_id = C10.organizations_parent_id
+                LEFT JOIN organizations A11 ON A11.organizations_id = p.first_reviewer_organizations_id
+                LEFT JOIN organizations B11 ON B11.organizations_id = A11.organizations_parent_id
+                LEFT JOIN organizations C11 ON C11.organizations_id = B11.organizations_parent_id
+                LEFT JOIN organizations D11 ON D11.organizations_id = C11.organizations_parent_id
                 WHERE p.proposal_id = @id";
 
             using var cmd = new SqlCommand(sql, conn);

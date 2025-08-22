@@ -224,12 +224,14 @@
                                         <label class="form-label-modern">主務課 <span class="required-badge">必須</span></label>
                                         @* @Html.DropDownListFor(m => m.EvaluationSectionId, ((Proposal.BL.ProposalBL.DropdownsViewModel)ViewBag.Dropdowns).Shumukas, new { @class = "form-control-modern" })
                                         @Html.ValidationMessageFor(m => m.EvaluationSectionId, "", new { @class = "validation-message" }) *@
+                                        @Html.HiddenFor(m => m.EvaluationSectionId)
+                                        @Html.HiddenFor(m => m.ResponsibleSectionId1)
                                     </div>              
                                 </div>
                                 <div class="form-row-modern">
                                     <div class="form-group-modern">
                                         <label class="form-label-modern">関係課 <span class="required-badge">必須</span></label>
-                                        @Html.ValidationMessageFor(m => m.ResponsibleSectionId1, "", new { @class = "validation-message" })
+                                        @* @Html.ValidationMessageFor(m => m.ResponsibleSectionId1, "", new { @class = "validation-message" }) *@
                                         <div class="d-flex flex-column gap-2">
                                             <div>
                                                 @* @Html.DropDownListFor(m => m.ResponsibleSectionId1, ((Proposal.BL.ProposalBL.DropdownsViewModel)ViewBag.Dropdowns).Kankeikas, new { @class = "form-control-modern" }) *@

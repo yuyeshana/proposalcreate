@@ -155,7 +155,7 @@ namespace Proposal.BL
             {
                 Value = ((int)e).ToString(),
                 Text = (e.GetType().GetField(e.ToString()).GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()?.Description) ?? e.ToString()
-            }).ToList();
+            }).OrderBy(x => int.Parse(x.Value)).ToList();
         }
 
         /// <summary>
@@ -295,7 +295,7 @@ namespace Proposal.BL
         /// <summary>
         /// 提案書詳細登録
         /// </summary>
-        public int Insertproposals_detail(ProposalModel basicInfo, ProposalContentModel proposalContent)
+        public void Insertproposals_detail(ProposalModel basicInfo, ProposalContentModel proposalContent)
         {
             //作成日
             basicInfo.Createddate = DateTime.Now.ToString();
@@ -312,7 +312,14 @@ namespace Proposal.BL
                 basicInfo.Submissiondate = DateTime.Now.ToString();
             }
 
-            return _createDAC.SqlInsertproposals_detail(basicInfo, proposalContent);
+            if (basicInfo.ProposalKbnId == "2")
+            {
+                _createDAC.Insertproposals_detail_GroupInfo(basicInfo, proposalContent);
+            }
+            else
+            {
+                _createDAC.SqlInsertproposals_detail(basicInfo, proposalContent);
+            }
         }
 
         /// <summary>

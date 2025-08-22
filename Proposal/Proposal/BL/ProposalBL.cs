@@ -161,68 +161,68 @@ namespace Proposal.BL
         /// <summary>
         /// 提案書の詳細情報取得
         /// </summary>
-        public void GetProposalDetailById(ProposalModel model, ProposalContentModel proposalContent)
+        public void GetProposalDetailById(ProposalViewModel viewModel)
         {
-            var dataTable = _createDAC.GetProposalDetailById(model.ProposalId);
+            var dataTable = _createDAC.GetProposalDetailById(viewModel.BasicInfo.ProposalId);
             if (dataTable != null && dataTable.Rows.Count > 0)
             {
                 var row = dataTable.Rows[0]; // 指定IDのデータを取得
 
                 // モデルに設定
-                model.ProposalId = row["proposal_id"].ToString();
-                model.Status = row["status"] == DBNull.Value ? null : (int?)Convert.ToInt32(row["status"]);
-                model.TeianYear = row["proposal_year"].ToString();
-                model.TeianDaimei = row["proposal_name"].ToString();
-                model.ProposalTypeId = row["proposal_type"].ToString();
-                model.ShimeiOrDaihyoumei = row["name"].ToString();
+                viewModel.BasicInfo.ProposalId = row["proposal_id"].ToString();
+                viewModel.BasicInfo.Status = row["status"] == DBNull.Value ? null : (int?)Convert.ToInt32(row["status"]);
+                viewModel.BasicInfo.TeianYear = row["proposal_year"].ToString();
+                viewModel.BasicInfo.TeianDaimei = row["proposal_name"].ToString();
+                viewModel.BasicInfo.ProposalTypeId = row["proposal_type"].ToString();
+                viewModel.BasicInfo.ShimeiOrDaihyoumei = row["name"].ToString();
 
                 // 提案者情報
-                model.AffiliationId = row["affiliation_id"].ToString();
-                model.DepartmentId = row["department_id"].ToString();
-                model.SectionId = row["section_id"].ToString();
-                model.SubsectionId = row["subsection_id"].ToString();
-                model.AffiliationName = row["affiliation_name"].ToString();
-                model.DepartmentName = row["department_name"].ToString();
-                model.SectionName = row["section_name"].ToString();
-                model.SubsectionName = row["subsection_name"].ToString();
+                viewModel.BasicInfo.AffiliationId = row["affiliation_id"].ToString();
+                viewModel.BasicInfo.DepartmentId = row["department_id"].ToString();
+                viewModel.BasicInfo.SectionId = row["section_id"].ToString();
+                viewModel.BasicInfo.SubsectionId = row["subsection_id"].ToString();
+                viewModel.BasicInfo.AffiliationName = row["affiliation_name"].ToString();
+                viewModel.BasicInfo.DepartmentName = row["department_name"].ToString();
+                viewModel.BasicInfo.SectionName = row["section_name"].ToString();
+                viewModel.BasicInfo.SubsectionName = row["subsection_name"].ToString();
 
                 // 第一次審査者情報
-                model.FirstReviewerAffiliationId = row["first_reviewer_affiliation_id"].ToString();
-                model.FirstReviewerDepartmentId = row["first_reviewer_department_id"].ToString();
-                model.FirstReviewerSectionId = row["first_reviewer_section_id"].ToString();
-                model.FirstReviewerSubsectionId = row["first_reviewer_subsection_id"].ToString();
-                model.FirstReviewerName = row["first_reviewer_name"].ToString();
+                viewModel.BasicInfo.FirstReviewerAffiliationId = row["first_reviewer_affiliation_id"].ToString().Trim();
+                viewModel.BasicInfo.FirstReviewerDepartmentId = row["first_reviewer_department_id"].ToString().Trim();
+                viewModel.BasicInfo.FirstReviewerSectionId = row["first_reviewer_section_id"].ToString().Trim();
+                viewModel.BasicInfo.FirstReviewerSubsectionId = row["first_reviewer_subsection_id"].ToString().Trim();
+                viewModel.BasicInfo.FirstReviewerName = row["first_reviewer_name"].ToString();
 
                 // 第一次審査者情報がnullの場合はcheckboxをチェック
-                if (string.IsNullOrEmpty(model.FirstReviewerAffiliationId))
+                if (string.IsNullOrEmpty(viewModel.BasicInfo.FirstReviewerAffiliationId))
                 {
-                    model.SkipFirstReviewer = true;
+                    viewModel.BasicInfo.SkipFirstReviewer = true;
                 }
-                model.EvaluationSectionId = row["evaluation_section_id"].ToString().Trim();
-                model.ResponsibleSectionId1 = row["responsible_section_id1"].ToString().Trim();
-                model.ResponsibleSectionId2 = row["responsible_section_id2"].ToString().Trim();
-                model.ResponsibleSectionId3 = row["responsible_section_id3"].ToString().Trim();
-                model.ResponsibleSectionId4 = row["responsible_section_id4"].ToString().Trim();
-                model.ResponsibleSectionId5 = row["responsible_section_id5"].ToString().Trim();
+                viewModel.BasicInfo.EvaluationSectionId = row["evaluation_section_id"].ToString().Trim();
+                viewModel.BasicInfo.ResponsibleSectionId1 = row["responsible_section_id1"].ToString().Trim();
+                viewModel.BasicInfo.ResponsibleSectionId2 = row["responsible_section_id2"].ToString().Trim();
+                viewModel.BasicInfo.ResponsibleSectionId3 = row["responsible_section_id3"].ToString().Trim();
+                viewModel.BasicInfo.ResponsibleSectionId4 = row["responsible_section_id4"].ToString().Trim();
+                viewModel.BasicInfo.ResponsibleSectionId5 = row["responsible_section_id5"].ToString().Trim();
 
                 // 提案内容赋值
-                proposalContent.GenjyoMondaiten = row["genjyomondaiten"].ToString();
-                proposalContent.Kaizenan = row["kaizenan"].ToString();
-                proposalContent.KoukaJishi = row["koukaJishi"] == DBNull.Value ? (KoukaJishi?)null : (KoukaJishi)Convert.ToInt32(row["koukaJishi"]);
-                proposalContent.Kouka = row["kouka"].ToString();
+                viewModel.ProposalContent.GenjyoMondaiten = row["genjyomondaiten"].ToString();
+                viewModel.ProposalContent.Kaizenan = row["kaizenan"].ToString();
+                viewModel.ProposalContent.KoukaJishi = row["koukaJishi"] == DBNull.Value ? (KoukaJishi?)null : (KoukaJishi)Convert.ToInt32(row["koukaJishi"]);
+                viewModel.ProposalContent.Kouka = row["kouka"].ToString();
                 // 日付
-                model.Createddate = row["created_time"].ToString();
+                viewModel.BasicInfo.Createddate = row["created_time"].ToString();
 
 
                 // 提案区分はグループの場合
                 if (row["proposal_kbn"].ToString() == "2")
                 {
-                    model.ProposalKbnId = "2";
+                    viewModel.BasicInfo.ProposalKbnId = "2";
                     // --- グループメンバー情報の取得と設定 ---
-                    model.GroupMembers = new List<GroupMemberModel>();
+                    viewModel.BasicInfo.GroupMembers = new List<GroupMemberModel>();
 
                     // グループ名を設定
-                    model.GroupMei = row["group_name"].ToString();
+                    viewModel.BasicInfo.GroupMei = row["group_name"].ToString();
 
                     int validMemberCount = 0;
                     for (int i = 1; i <= 10; i++)
@@ -237,12 +237,12 @@ namespace Proposal.BL
                         };
 
                         validMemberCount++;
-                        model.GroupMembers.Add(m);
+                        viewModel.BasicInfo.GroupMembers.Add(m);
                     }
                 }
                 else
                 {
-                    model.ProposalKbnId = "1";
+                    viewModel.BasicInfo.ProposalKbnId = "1";
                 }
 
             }

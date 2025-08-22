@@ -250,10 +250,12 @@ namespace Proposal.DAC
                     p.organizations_id,
                     p.name,
                     p.group_name,
-                    p.first_reviewer_affiliation_id,
-                    p.first_reviewer_department_id,
-                    p.first_reviewer_section_id,
-                    p.first_reviewer_subsection_id,
+
+                    p.first_reviewer_organizations_id as first_reviewer_subsection_id ,
+                    B11.organizations_id as first_reviewer_section_id,
+                    C11.organizations_id as first_reviewer_department_id,
+                    D11.organizations_id as first_reviewer_affiliation_id,
+
                     p.first_reviewer_name,
                     p.evaluation_section_id,
                     p.responsible_section_id1,
@@ -313,6 +315,12 @@ namespace Proposal.DAC
                 LEFT JOIN organizations B10 ON B10.organizations_id = A10.organizations_parent_id
                 LEFT JOIN organizations C10 ON C10.organizations_id = B10.organizations_parent_id
                 LEFT JOIN organizations D10 ON D10.organizations_id = C10.organizations_parent_id
+
+                LEFT JOIN organizations A11 ON A11.organizations_id = p.first_reviewer_organizations_id
+                LEFT JOIN organizations B11 ON B11.organizations_id = A11.organizations_parent_id
+                LEFT JOIN organizations C11 ON C11.organizations_id = B11.organizations_parent_id
+                LEFT JOIN organizations D11 ON D11.organizations_id = C11.organizations_parent_id 
+
                 WHERE p.proposal_id = @id";
 
             using var cmd = new SqlCommand(sql, conn);
@@ -320,7 +328,7 @@ namespace Proposal.DAC
             using var adapter = new SqlDataAdapter(cmd);
             var dataTable = new DataTable();
             adapter.Fill(dataTable);
-            
+
             return dataTable;
         }
 

@@ -50,8 +50,8 @@
             <div class="form-row-modern single">
                 <div class="form-group-modern">
                     <label class="form-label-modern">添付書類1</label>
-                    <input type="file" name="TenpuFile1" class="form-control-modern" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" />
-                    @Html.HiddenFor(m => m.TenpuFileName1)
+                    @* <input type="file" name="TenpuFile1" class="form-control-modern" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" /> *@
+                    <input type="file" name="TenpuFile1" value="@Model.TenpuFileName1" />
                 </div>
             </div>
             <div class="form-row-modern single">

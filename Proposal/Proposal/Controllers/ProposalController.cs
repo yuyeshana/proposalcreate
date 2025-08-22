@@ -22,6 +22,7 @@ namespace Proposal.Controllers
         private readonly ProposalBL _createBL;
         private readonly IConfiguration _configuration;
         private readonly ProposalValidator _proposalValidator;
+        private ProposalViewModel _viewModel;
 
         /// <summary>
         /// コンストラクタ
@@ -35,6 +36,7 @@ namespace Proposal.Controllers
             _proposalValidator = proposalValidator;
             var connectionString = _configuration.GetConnectionString("ProposalDB");
             _createBL = new ProposalBL(connectionString);
+            _viewModel = new ProposalViewModel();
         }
 
         /// <summary>
@@ -56,32 +58,32 @@ namespace Proposal.Controllers
             ViewBag.Dropdowns = _createBL.GetDropdowns();
 
             // ビューモデルを初期化
-            var viewModel = new ProposalViewModel();
+            _viewModel = new ProposalViewModel();
 
             // 提案書IDとユーザーIDを設定
-            viewModel.BasicInfo.ProposalId = proposalid;
-            viewModel.BasicInfo.UserId = userId;
-            viewModel.ProposalContent.ProposalId = proposalid;
-            viewModel.ProposalContent.UserId = userId;
+            _viewModel.BasicInfo.ProposalId = proposalid;
+            _viewModel.BasicInfo.UserId = userId;
+            _viewModel.ProposalContent.ProposalId = proposalid;
+            _viewModel.ProposalContent.UserId = userId;
 
 
             // 編集・確認の場合
-            if (!string.IsNullOrEmpty(viewModel.BasicInfo.ProposalId))
+            if (!string.IsNullOrEmpty(_viewModel.BasicInfo.ProposalId))
             {
                 // 提案書の詳細情報を取得
-                _createBL.GetProposalDetailById(viewModel.BasicInfo, viewModel.ProposalContent);
+                _createBL.GetProposalDetailById(_viewModel);
 
             }
             // 新規作成の場合
             else
             {
-                viewModel.BasicInfo.TeianYear = DateTime.Now.ToString("ggy年", new CultureInfo("ja-JP") { DateTimeFormat = { Calendar = new JapaneseCalendar() } });
+                _viewModel.BasicInfo.TeianYear = DateTime.Now.ToString("ggy年", new CultureInfo("ja-JP") { DateTimeFormat = { Calendar = new JapaneseCalendar() } });
 
                 // 提案者情報を取得
-                 _createBL.GetUserInfoByUserId(viewModel.BasicInfo);
+                _createBL.GetUserInfoByUserId(_viewModel.BasicInfo);
             }
 
-            return View("Proposal", viewModel);
+            return View("Proposal", _viewModel);
         }
 
         /// <summary>
@@ -141,121 +143,34 @@ namespace Proposal.Controllers
             }
         }
 
-    
 
 
-        /// <summary>
-        /// 提案書作成・編集処理を実行します（POST）
-        /// </summary>
-        /// <param name="viewModel">提案書作成画面のビューモデル</param>
-        /// <param name="action">実行するアクション（Menu/Ichijihozon/Deryoku/Submit）</param>
-        /// <returns>処理結果に応じた画面遷移</returns>
         [HttpPost]
         public IActionResult Index(ProposalViewModel viewModel, string action)
         {
-            // ビューモデルから基本情報モデルを作成
-            var basicInfoModel = CreateBasicInfoModelFromViewModel(viewModel);
-
-            // ビューモデルから提案内容モデルを作成
-            var proposalContentModel = CreateProposalContentModelFromViewModel(viewModel);
-
             // アクションに応じた処理を実行
             switch (action)
             {
-                case "Menu":
-                    return View("~/Views/Menu/Menu.cshtml");
+                //一時保存
+                case "TemporarySave":
+                    return HandleTemporarySave(viewModel);
 
-                case "Ichijihozon":
-                    return HandleTemporarySave(basicInfoModel, proposalContentModel, viewModel);
+                //CSV出力
+                case "Output":
+                //return HandleExport(basicInfoModel, proposalContentModel, viewModel);
 
-                case "Deryoku":
-                    return HandleExport(basicInfoModel, proposalContentModel, viewModel);
-
+                //提出
                 case "Submit":
-                    return HandleSubmit(basicInfoModel, proposalContentModel, viewModel);
+                //return HandleSubmit(basicInfoModel, proposalContentModel, viewModel);
 
                 default:
                     // バリデーションエラー時の処理
                     if (!ModelState.IsValid)
                     {
-                        return HandleValidationError(basicInfoModel, proposalContentModel, viewModel);
+                        //return HandleValidationError(basicInfoModel, proposalContentModel, viewModel);
                     }
                     return View("~/Views/Proposal/Proposal.cshtml", viewModel);
             }
-        }
-
-        /// <summary>
-        /// ビューモデルから基本情報モデルを作成します
-        /// </summary>
-        /// <param name="viewModel">ビューモデル</param>
-        /// <returns>基本情報モデル</returns>
-        private ProposalModel CreateBasicInfoModelFromViewModel(ProposalViewModel viewModel)
-        {
-            return new ProposalModel
-            {
-                // 基本情報
-                ProposalId = viewModel.BasicInfo.ProposalId,
-                UserId = viewModel.BasicInfo.UserId,
-                TeianYear = viewModel.BasicInfo.TeianYear,
-                TeianDaimei = viewModel.BasicInfo.TeianDaimei,
-                ProposalTypeId = viewModel.BasicInfo.ProposalTypeId,
-                ProposalKbnId = viewModel.BasicInfo.ProposalKbnId,
-                AffiliationId = viewModel.BasicInfo.AffiliationId,
-                DepartmentId = viewModel.BasicInfo.DepartmentId,
-                SectionId = viewModel.BasicInfo.SectionId,
-                SubsectionId = viewModel.BasicInfo.SubsectionId,
-                AffiliationName = viewModel.BasicInfo.AffiliationName,
-                DepartmentName = viewModel.BasicInfo.DepartmentName,
-                SectionName = viewModel.BasicInfo.SectionName,
-                SubsectionName = viewModel.BasicInfo.SubsectionName,
-                ShimeiOrDaihyoumei = viewModel.BasicInfo.ShimeiOrDaihyoumei,
-                GroupMei = viewModel.BasicInfo.GroupMei,
-                GroupMembers = viewModel.BasicInfo.GroupMembers,
-                SkipFirstReviewer = viewModel.BasicInfo.SkipFirstReviewer,
-                FirstReviewerAffiliationId = viewModel.BasicInfo.FirstReviewerAffiliationId,
-                FirstReviewerDepartmentId = viewModel.BasicInfo.FirstReviewerDepartmentId,
-                FirstReviewerSectionId = viewModel.BasicInfo.FirstReviewerSectionId,
-                FirstReviewerSubsectionId = viewModel.BasicInfo.FirstReviewerSubsectionId,
-                FirstReviewerName = viewModel.BasicInfo.FirstReviewerName,
-                FirstReviewerTitle = viewModel.BasicInfo.FirstReviewerTitle,
-                EvaluationSectionId = viewModel.BasicInfo.EvaluationSectionId,
-                ResponsibleSectionId1 = viewModel.BasicInfo.ResponsibleSectionId1,
-                ResponsibleSectionId2 = viewModel.BasicInfo.ResponsibleSectionId2,
-                ResponsibleSectionId3 = viewModel.BasicInfo.ResponsibleSectionId3,
-                ResponsibleSectionId4 = viewModel.BasicInfo.ResponsibleSectionId4,
-                ResponsibleSectionId5 = viewModel.BasicInfo.ResponsibleSectionId5,
-                Status = viewModel.BasicInfo.Status,
-                Createddate = viewModel.BasicInfo.Createddate,
-                Submissiondate = viewModel.BasicInfo.Submissiondate
-            };
-        }
-
-        /// <summary>
-        /// ビューモデルから提案内容モデルを作成します
-        /// </summary>
-        /// <param name="viewModel">ビューモデル</param>
-        /// <returns>提案内容モデル</returns>
-        private ProposalContentModel CreateProposalContentModelFromViewModel(ProposalViewModel viewModel)
-        {
-            return new ProposalContentModel
-            {
-                ProposalId = viewModel.ProposalContent.ProposalId,
-                UserId = viewModel.ProposalContent.UserId,
-                GenjyoMondaiten = viewModel.ProposalContent.GenjyoMondaiten,
-                Kaizenan = viewModel.ProposalContent.Kaizenan,
-                KoukaJishi = viewModel.ProposalContent.KoukaJishi,
-                Kouka = viewModel.ProposalContent.Kouka,
-                TenpuFile1 = viewModel.ProposalContent.TenpuFile1,
-                TenpuFile2 = viewModel.ProposalContent.TenpuFile2,
-                TenpuFile3 = viewModel.ProposalContent.TenpuFile3,
-                TenpuFile4 = viewModel.ProposalContent.TenpuFile4,
-                TenpuFile5 = viewModel.ProposalContent.TenpuFile5,
-                TenpuFileName1 = viewModel.ProposalContent.TenpuFileName1,
-                TenpuFileName2 = viewModel.ProposalContent.TenpuFileName2,
-                TenpuFileName3 = viewModel.ProposalContent.TenpuFileName3,
-                TenpuFileName4 = viewModel.ProposalContent.TenpuFileName4,
-                TenpuFileName5 = viewModel.ProposalContent.TenpuFileName5
-            };
         }
 
         /// <summary>
@@ -265,28 +180,68 @@ namespace Proposal.Controllers
         /// <param name="proposalContentModel">提案内容モデル</param>
         /// <param name="viewModel">ビューモデル</param>
         /// <returns>処理結果</returns>
-        private IActionResult HandleTemporarySave(ProposalModel basicInfoModel, ProposalContentModel proposalContentModel, ProposalViewModel viewModel)
+        private IActionResult HandleTemporarySave(ProposalViewModel viewModel)
         {
             // バリデーション実行
-            if (!ValidateModel(basicInfoModel) || !ValidateProposalContent(proposalContentModel))
-            {
-                SetDropdowns();
-                SetShowProposalContentFlagForModelStateError();
-                PreserveUserInputData(viewModel, basicInfoModel, proposalContentModel);
-                return View("~/Views/Proposal/Proposal.cshtml", viewModel);
-            }
+            // if (!ValidateModel(basicInfoModel) || !ValidateProposalContent(proposalContentModel))
+            // {
+            //     SetDropdowns();
+            //     SetShowProposalContentFlagForModelStateError();
+            //     PreserveUserInputData(viewModel, basicInfoModel, proposalContentModel);
+            //     return View("~/Views/Proposal/Proposal.cshtml", viewModel);
+            // }
 
             // アップロードファイルを保存
-            SaveUploadedFiles(proposalContentModel);
+            SaveUploadedFiles(viewModel.ProposalContent);
 
             // 提案状態を作成中に設定
-            basicInfoModel.Status = 1;
+            //basicInfoModel.Status = 1;
 
             // データベースに登録または更新
-            InsertOrUpdate(basicInfoModel, proposalContentModel);
+            //InsertOrUpdate(basicInfoModel, proposalContentModel);
 
             return RedirectToAction("Index", "ProposalList");
         }
+
+        /// <summary>
+        /// アップロードされたファイルを保存します（最大5つ）
+        /// </summary>
+        /// <param name="proposalContentModel">提案内容モデル</param>
+        private void SaveUploadedFiles(ProposalContentModel proposalContentModel)
+        {
+            // 最大5つのファイルを処理
+            for (int fileIndex = 1; fileIndex <= 5; fileIndex++)
+            {
+                var fileProperty = proposalContentModel.GetType().GetProperty($"TenpuFile{fileIndex}");
+                var uploadedFile = fileProperty?.GetValue(proposalContentModel) as IFormFile;
+                if (uploadedFile != null && uploadedFile.Length > 0)
+                {
+                    // アップロードディレクトリの作成
+                    var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Proposal/wwwroot/uploads");
+                    if (!Directory.Exists(uploadDirectory))
+                    {
+                        Directory.CreateDirectory(uploadDirectory);
+                    }
+
+                    // ファイル名の生成（GUID + 拡張子）
+                    var fileExtension = Path.GetExtension(uploadedFile.FileName);
+                    var fileName = $"{Guid.NewGuid()}{fileExtension}";
+                    var filePath = Path.Combine(uploadDirectory, fileName);
+
+                    // ファイルの保存
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        uploadedFile.CopyTo(fileStream);
+                    }
+
+                    // ファイル名をモデルに設定
+                    var fileNameProperty = proposalContentModel.GetType().GetProperty($"TenpuFileName{fileIndex}");
+                    fileNameProperty?.SetValue(proposalContentModel, fileName);
+                }
+            }
+        }
+
+
 
         /// <summary>
         /// CSV出力処理を実行します
@@ -300,7 +255,7 @@ namespace Proposal.Controllers
             // バリデーション実行
             if (!ValidateModel(basicInfoModel) || !ValidateProposalContent(proposalContentModel))
             {
-                SetDropdowns();
+                //SetDropdowns();
                 SetShowProposalContentFlagForModelStateError();
                 PreserveUserInputData(viewModel, basicInfoModel, proposalContentModel);
                 return View("~/Views/Proposal/Proposal.cshtml", viewModel);
@@ -343,7 +298,7 @@ namespace Proposal.Controllers
             // バリデーション実行
             if (!ValidateModel(basicInfoModel) || !ValidateProposalContent(proposalContentModel))
             {
-                SetDropdowns();
+                //SetDropdowns();
                 SetShowProposalContentFlagForModelStateError();
                 PreserveUserInputData(viewModel, basicInfoModel, proposalContentModel);
                 return View("~/Views/Proposal/Proposal.cshtml", viewModel);
@@ -359,43 +314,6 @@ namespace Proposal.Controllers
             InsertOrUpdate(basicInfoModel, proposalContentModel);
 
             return RedirectToAction("Index", "ProposalList");
-        }
-
-        /// <summary>
-        /// バリデーションエラー時の処理を実行します
-        /// </summary>
-        /// <param name="basicInfoModel">基本情報モデル</param>
-        /// <param name="proposalContentModel">提案内容モデル</param>
-        /// <param name="viewModel">ビューモデル</param>
-        /// <returns>エラー画面</returns>
-        private IActionResult HandleValidationError(ProposalModel basicInfoModel, ProposalContentModel proposalContentModel, ProposalViewModel viewModel)
-        {
-            // グループメンバーを10人に補完
-            if (basicInfoModel?.GroupMembers != null)
-            {
-                int requiredCount = Math.Max(basicInfoModel.GroupMembers.Count, 10);
-                while (basicInfoModel.GroupMembers.Count < requiredCount)
-                {
-                    basicInfoModel.GroupMembers.Add(new GroupMemberModel());
-                }
-            }
-
-            // ユーザー入力データを保持
-            PreserveUserInputData(viewModel, basicInfoModel, proposalContentModel);
-
-            // ドロップダウンリストを設定
-            SetDropdowns();
-            SetShowProposalContentFlagForModelStateError();
-
-            return View("~/Views/Proposal/Proposal.cshtml", viewModel);
-        }
-
-        /// <summary>
-        /// ドロップダウンリストをViewBagにセットします
-        /// </summary>
-        private void SetDropdowns()
-        {
-            ViewBag.Dropdowns = _createBL.GetDropdowns();
         }
 
         /// <summary>
@@ -425,7 +343,7 @@ namespace Proposal.Controllers
             {
                 viewModel.BasicInfo.GroupMembers = new List<GroupMemberModel>();
             }
-            
+
             // グループメンバーを10人に補完
             while (viewModel.BasicInfo.GroupMembers.Count < 10)
             {
@@ -491,49 +409,7 @@ namespace Proposal.Controllers
             viewModel.ProposalContent.TenpuFileName5 = proposalContentModel?.TenpuFileName5;
         }
 
-        /// <summary>
-        /// アップロードされたファイルを保存します（最大5つ）
-        /// </summary>
-        /// <param name="proposalContentModel">提案内容モデル</param>
-        private void SaveUploadedFiles(ProposalContentModel proposalContentModel)
-        {
-            if (proposalContentModel == null)
-            {
-                return;
-            }
 
-            // 最大5つのファイルを処理
-            for (int fileIndex = 1; fileIndex <= 5; fileIndex++)
-            {
-                var fileProperty = proposalContentModel.GetType().GetProperty($"TenpuFile{fileIndex}");
-                var uploadedFile = fileProperty?.GetValue(proposalContentModel) as IFormFile;
-
-                if (uploadedFile != null && uploadedFile.Length > 0)
-                {
-                    // アップロードディレクトリの作成
-                    var uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Proposal/wwwroot/uploads");
-                    if (!Directory.Exists(uploadDirectory))
-                    {
-                        Directory.CreateDirectory(uploadDirectory);
-                    }
-
-                    // ファイル名の生成（GUID + 拡張子）
-                    var fileExtension = Path.GetExtension(uploadedFile.FileName);
-                    var fileName = $"{Guid.NewGuid()}{fileExtension}";
-                    var filePath = Path.Combine(uploadDirectory, fileName);
-
-                    // ファイルの保存
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        uploadedFile.CopyTo(fileStream);
-                    }
-
-                    // ファイル名をモデルに設定
-                    var fileNameProperty = proposalContentModel.GetType().GetProperty($"TenpuFileName{fileIndex}");
-                    fileNameProperty?.SetValue(proposalContentModel, fileName);
-                }
-            }
-        }
 
         /// <summary>
         /// 基本情報モデルの検証を実行します
@@ -661,7 +537,7 @@ namespace Proposal.Controllers
                 if (basicInfoModel.ProposalKbnId == "2")
                 {
                     // 既存のグループデータを削除
-                   // _createBL.DeleteGroupInfo(basicInfoModel.ProposalId);
+                    // _createBL.DeleteGroupInfo(basicInfoModel.ProposalId);
 
                     // 新しいグループデータを登録
                     //_createBL.InsertGroupInfo(basicInfoModel);
